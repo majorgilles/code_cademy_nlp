@@ -1,0 +1,43 @@
+repos:
+  - repo: local
+    hooks:
+    - id: ruff-check
+      name: ruff check
+      entry: poetry run ruff check .
+      language: system
+      types: [ python ]
+    - id: ruff-format
+      name: ruff format
+      entry: poetry run ruff format .
+      language: system
+      types: [ python ]
+    - id: mypy
+      name: mypy
+      entry: poetry run mypy --install-types --non-interactive
+      exclude: ^(vulture_whitelist\.py|tutorials/)
+      language: system
+      types: [ python ]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.4.0
+    hooks:
+      - id: check-json
+        exclude: >
+          (?x)^(
+           package-lock.json |
+           .vscode/
+           )
+      - id: check-xml
+      - id: detect-aws-credentials
+      - id: detect-private-key
+      - id: end-of-file-fixer
+        exclude: >
+          (?x)^(
+          lxml/
+          )
+      - id: mixed-line-ending
+      - id: name-tests-test
+      - id: trailing-whitespace
+        exclude: >
+          (?x)^(
+          lxml/
+          )
