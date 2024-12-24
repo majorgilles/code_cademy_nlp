@@ -53,3 +53,6 @@ print(df.sort_index(axis=1, ascending=False))
 
 # sort by values
 print(df.sort_values(by="B"))
+
+# get data by label
+print(df["A"])
