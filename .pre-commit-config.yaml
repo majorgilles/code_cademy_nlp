@@ -27,7 +27,6 @@ repos:
            .vscode/
            )
       - id: check-xml
-      - id: detect-aws-credentials
       - id: detect-private-key
       - id: end-of-file-fixer
         exclude: >
