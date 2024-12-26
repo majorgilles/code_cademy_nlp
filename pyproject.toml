@@ -19,6 +19,16 @@ python = ">=3.12,<3.13"
 pandas = "^2.2.3"
 cudf-cu12 = {version = "^24.12.0", source = "nvidia"}
 dask-cudf-cu12 = {version= "^24.12.0", source = "nvidia"}
+cucim-cu12 = {version= "^24.12.0", source = "nvidia"}
+cuml-cu12 = {version= "^24.12.0", source = "nvidia"}
+cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
+cuspatial-cu12 = {version= "^24.12.0", source = "nvidia"}
+cuvs-cu12 = {version= "^24.12.0", source = "nvidia"}
+cuxfilter-cu12 = {version= "^24.12.0", source = "nvidia"}
+cuproj-cu12 = {version= "^24.12.0", source = "nvidia"}
+nx-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
+raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
+pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
 pydantic =  "^2.10.4"
 
 [tool.poetry.group.dev.dependencies]
