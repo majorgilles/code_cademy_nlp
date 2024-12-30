@@ -22,18 +22,18 @@ pandas = "^2.2.3"
 pydantic =  "^2.10.4"
 seaborn = "^0.13.2"
 # nvidia libs
-cudf-cu12 = {version = "^24.12.0", source = "nvidia"}
-dask-cudf-cu12 = {version= "^24.12.0", source = "nvidia"}
-cucim-cu12 = {version= "^24.12.0", source = "nvidia"}
-cuml-cu12 = {version= "^24.12.0", source = "nvidia"}
-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
-cuspatial-cu12 = {version= "^24.12.0", source = "nvidia"}
-cuvs-cu12 = {version= "^24.12.0", source = "nvidia"}
-cuxfilter-cu12 = {version= "^24.12.0", source = "nvidia"}
-cuproj-cu12 = {version= "^24.12.0", source = "nvidia"}
-nx-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
-raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
-pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cudf-cu12 = {version = "^24.12.0", source = "nvidia"}
+#dask-cudf-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cucim-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cuml-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cuspatial-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cuvs-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cuxfilter-cu12 = {version= "^24.12.0", source = "nvidia"}
+#cuproj-cu12 = {version= "^24.12.0", source = "nvidia"}
+#nx-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
+#raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
+#pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
 
 
 
