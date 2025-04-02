@@ -1,4 +1,9 @@
 [project]
+name = "nlp_repo"
+version = "0.1.0"
+description = "Gilles Major Repo for NLP experiements"
+readme = "README.md"
+package-mode = false
 requires-python = ">=3.12"
 
 [tool.poetry]
