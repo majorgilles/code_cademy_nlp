@@ -41,6 +41,7 @@ scipy = "^1.14.1"
 #nx-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
 #raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
 #pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
+nltk = "^3.9.1"
 
 
 
