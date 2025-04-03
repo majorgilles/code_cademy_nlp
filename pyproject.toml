@@ -22,7 +22,6 @@ priority = "explicit"
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
 # public pypi libs
-matplotlib = "^3.10.0"
 notebook = "^7.2.2"
 pandas = "^2.2.3"
 pydantic =  "^2.10.4"
@@ -42,6 +41,8 @@ scipy = "^1.14.1"
 #raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
 #pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
 nltk = "^3.9.1"
+numpy = "^2.2.4"
+matplotlib = "^3.10.1"
 
 
 
