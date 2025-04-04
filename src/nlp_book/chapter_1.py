@@ -2,6 +2,7 @@
 
 import re
 from collections import Counter
+from itertools import permutations
 
 greetings = "Hi Hello Greetings".split()
 user_statement = "Hello Joshua"
@@ -55,3 +56,6 @@ print(re_greeting.match("yo Rosa"))
 print(Counter(user_token_sequence))
 print(Counter("Guten Morgen Rosa".split()))
 print(Counter("Guten Morgen Rosa!".split()))
+
+gram = [" ".join(combo) for combo in permutations("Good morning Rosa!".split(), 3)]
+print(gram)
