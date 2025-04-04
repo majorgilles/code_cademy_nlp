@@ -43,6 +43,7 @@ scipy = "^1.14.1"
 nltk = "^3.9.1"
 numpy = "^2.2.4"
 matplotlib = "^3.10.1"
+spacy = "^3.8.5"
 
 
 
