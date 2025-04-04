@@ -59,3 +59,33 @@ print(Counter("Guten Morgen Rosa!".split()))
 
 gram = [" ".join(combo) for combo in permutations("Good morning Rosa!".split(), 3)]
 print(gram)
+
+gilles_regex = re.compile(r"(gilles|gilou)(?:\s+)(major)?", flags=re.IGNORECASE)
+print(gilles_regex.match("Gilles"))
+print(gilles_regex.match("gilles"))
+print(gilles_regex.match("giLLes "))
+print(gilles_regex.match("Gillles"))
+print(gilles_regex.match("Gilles major"))
+print(gilles_regex.match("Gilles majoR"))
+print(gilles_regex.match("Gilles maJor"))
+print(gilles_regex.match("Gilles  maJor"))
+# print(gilles_regex.match("Gilles major").groups())
+
+
+the_sentence = "Gilles is a major. Gilou is a major."
+advanced_regex = r"(?<!\w)[.!?](?!\w)"
+
+# Using match() - only looks at the beginning of the string
+print("Using match():", re.match(advanced_regex, the_sentence))  # None
+
+# Using search() - looks anywhere in the string
+print("Using search():", re.search(advanced_regex, the_sentence))  # Finds a match
+
+# To find all matches, use findall()
+print(
+    "Using findall():", re.findall(advanced_regex, the_sentence)
+)  # ['.', '.']the_sentence = "Gilles is a major. Gilou is a major."
+lookbehind_regex = r"(?<=[a-z])[.!?](?=\s|$)"
+print(re.search(lookbehind_regex, the_sentence))
+print(re.search(lookbehind_regex, "Gilles is a major. Gilou is a major."))
+print(re.search(lookbehind_regex, "Dr. Gilles is a major. Gilou is a major."))
