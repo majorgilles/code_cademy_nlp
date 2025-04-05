@@ -44,6 +44,7 @@ nltk = "^3.9.1"
 numpy = "^2.2.4"
 matplotlib = "^3.10.1"
 spacy = "^3.8.5"
+mcp-server-git = "^2025.1.14"
 
 
 
