@@ -39,12 +39,10 @@ for sentence in new_sentences:
     print("\nOriginal:", sentence)
     print("Tokens:", word_tokenize(sentence))
 
-# Load SpaCy model
-nlp = spacy.load("en_core_web_sm")
-
+# SpaCy tokenization
 print("\nSpaCy tokenization:")
-for sentence in new_sentences:
-    doc = nlp(sentence)
-    tokens = [token.text for token in doc]
-    print("\nOriginal:", sentence)
-    print("Tokens:", tokens)
+nlp = spacy.load("en_core_web_sm")
+doc = nlp(texts[-1])
+print(type(doc))
+tokens = [token.text for token in doc]
+print(tokens)
