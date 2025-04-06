@@ -49,6 +49,10 @@ print(type(doc))
 tokens = [token.text for token in doc]
 print(tokens)
 
+# Demonstrate spaCy's additional features
+print("\nSpaCy's advanced features:")
+for token in doc:
+    print(f"Token: {token.text:15} | Lemma: {token.lemma_:15} | POS: {token.pos_:10} | Tag: {token.tag_:10}")
 
 sentence_span = list(doc.sents)[0]
 svg = displacy.render(sentence_span, style="dep", jupyter=False)
