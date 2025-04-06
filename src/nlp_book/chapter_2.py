@@ -3,6 +3,7 @@
 import re
 
 import nltk
+import spacy
 from nltk import word_tokenize
 
 # Download required NLTK data
@@ -37,3 +38,13 @@ print("\nNLTK tokenization:")
 for sentence in new_sentences:
     print("\nOriginal:", sentence)
     print("Tokens:", word_tokenize(sentence))
+
+# Load SpaCy model
+nlp = spacy.load("en_core_web_sm")
+
+print("\nSpaCy tokenization:")
+for sentence in new_sentences:
+    doc = nlp(sentence)
+    tokens = [token.text for token in doc]
+    print("\nOriginal:", sentence)
+    print("Tokens:", tokens)
