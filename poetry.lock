@@ -4191,6 +4191,18 @@ shellingham = ">=1.3.0"
 typing-extensions = ">=3.7.4.3"
 
 [[package]]
+name = "types-decorator"
+version = "5.2.0.20250324"
+description = "Typing stubs for decorator"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "types_decorator-5.2.0.20250324-py3-none-any.whl", hash = "sha256:0740cee7ce57cf9cf2b306114a1588984255f706efa0f35b54b2cff290a110e2"},
+    {file = "types_decorator-5.2.0.20250324.tar.gz", hash = "sha256:8fbd72b0dadc56176e48e5187de744e76fe45bcc91a25874baa75662412155d3"},
+]
+
+[[package]]
 name = "types-deprecated"
 version = "1.2.15.20241117"
 description = "Typing stubs for Deprecated"
@@ -4536,4 +4548,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "f88fa46424393c903e52bcb7fe9f4c1c812cd50053d5e2766d0268520cd12264"
+content-hash = "cffca5dd5384da81019e030ee8dc918dc322cf157db37b3e99b75126880a40a6"

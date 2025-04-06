@@ -1,10 +1,12 @@
 """Chapter 2: Tokenization using NLTK."""
 
 import re
+from pathlib import Path
 
 import nltk
 import spacy
 from nltk import word_tokenize
+from spacy import displacy
 
 # Download required NLTK data
 nltk.download("punkt")
@@ -46,3 +48,10 @@ doc = nlp(texts[-1])
 print(type(doc))
 tokens = [token.text for token in doc]
 print(tokens)
+
+
+sentence_span = list(doc.sents)[0]
+svg = displacy.render(sentence_span, style="dep", jupyter=False)
+with Path("sentence_diagram.svg").open("w") as f:
+    f.write(svg)
+displacy.render(sentence_span, style="dep")

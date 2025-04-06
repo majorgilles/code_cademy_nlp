@@ -45,6 +45,7 @@ numpy = "^2.2.4"
 matplotlib = "^3.10.1"
 spacy = "^3.8.5"
 mcp-server-git = "^2025.1.14"
+types-decorator = "^5.2.0.20250324"
 
 
 
