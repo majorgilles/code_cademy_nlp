@@ -9,7 +9,14 @@ class GPTDatasetV1(Dataset):
     """GPT Dataset V1."""
 
     def __init__(self, text: str, tokenizer: Encoding, max_length: int, stride: int) -> None:
-        """Initialize the dataset with the given text, tokenizer, max_length, and stride."""
+        """Initialize the dataset with the given text, tokenizer, max_length, and stride.
+
+        Args:
+            text: The text to encode.
+            tokenizer: The tokenizer to use.
+            max_length: The maximum length of the input and target tensors.
+            stride: The stride of the input and target tensors.
+        """
         self.input_ids: list[torch.Tensor] = []
         self.target_ids: list[torch.Tensor] = []
 
