@@ -1,4 +1,4 @@
-"""Tokenizer class."""
+"""Tokenizer classes."""
 
 import logging
 import re
