@@ -23,6 +23,6 @@ class SimpleTokenizerV1:
     def decode(self, tokens: list[int]) -> str:
         """Decode a list of integers into a text."""
         text = " ".join([self.int_to_str[token] for token in tokens])
-        text = re.sub(REGEX_PATTERN, r"\1", text)
+        text = re.sub(r"\s+([,.?!\"()\'])", r"\1", text)
         logging.info(f"Decoded text: {text}")
         return text
