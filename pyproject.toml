@@ -22,11 +22,19 @@ priority = "explicit"
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
 # public pypi libs
+matplotlib = "^3.10.1"
+nltk = "^3.9.1"
 notebook = "^7.2.2"
+numpy = "^2.2.4"
 pandas = "^2.2.3"
 pydantic =  "^2.10.4"
 seaborn = "^0.13.2"
+scikit-learn = "^1.6.1"
 scipy = "^1.14.1"
+spacy = "^3.8.5"
+tiktoken = "^0.9.0"
+torch = "^2.6.0"
+types-decorator = "^5.2.0.20250324"
 # nvidia libs
 #cudf-cu12 = {version = "^24.12.0", source = "nvidia"}
 #dask-cudf-cu12 = {version= "^24.12.0", source = "nvidia"}
@@ -40,14 +48,6 @@ scipy = "^1.14.1"
 #nx-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
 #raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
 #pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
-nltk = "^3.9.1"
-numpy = "^2.2.4"
-matplotlib = "^3.10.1"
-spacy = "^3.8.5"
-types-decorator = "^5.2.0.20250324"
-scikit-learn = "^1.6.1"
-tiktoken = "^0.9.0"
-
 
 
 [tool.poetry.group.dev.dependencies]
