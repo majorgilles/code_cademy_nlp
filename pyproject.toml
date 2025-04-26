@@ -1,18 +1,19 @@
 [project]
-name = "nlp_repo"
+name = "src"
 version = "0.1.0"
 description = "Gilles Major Repo for NLP experiements"
 readme = "README.md"
-package-mode = false
 requires-python = ">=3.12"
 
 [tool.poetry]
-name = "code_cademy_nlp"
+name = "src"
 version = "0.1.0"
 description = "Gilles Major Repo for NLP experiements"
 authors = ["Gilles Major"]
 readme = "README.md"
-package-mode = false
+packages = [
+    { include = "src" }
+]
 
 [[tool.poetry.source]]
 name = "nvidia"
@@ -31,7 +32,7 @@ pydantic =  "^2.10.4"
 seaborn = "^0.13.2"
 scikit-learn = "^1.6.1"
 scipy = "^1.14.1"
-spacy = "^3.8.5"
+spacy = { version = "^3.8.5", markers = "platform_system != 'Windows'" }
 tiktoken = "^0.9.0"
 torch = "^2.6.0"
 types-decorator = "^5.2.0.20250324"
