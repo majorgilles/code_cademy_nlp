@@ -21,7 +21,7 @@ url = "https://pypi.nvidia.com"
 priority = "explicit"
 
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+python = ">=3.12,<3.14"
 # public pypi libs
 matplotlib = "^3.10.1"
 nltk = "^3.9.1"
