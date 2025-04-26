@@ -24,10 +24,20 @@ class SelfAttentionV1(nn.Module):
         """Forward pass.
 
         Args:
-            x (torch.Tensor): The input tensor of shape (batch_size, seq_len, d_in).
+            x: Input tensor of shape [6, 3] where:
+               - 6 is the number of tokens
+               - 3 is the dimension of each token's embedding
+               Example: [[0.43, 0.15, 0.89],  # token 1
+                        [0.55, 0.87, 0.66],  # token 2
+                        [0.57, 0.85, 0.64],  # token 3
+                        [0.22, 0.58, 0.33],  # token 4
+                        [0.77, 0.25, 0.10],  # token 5
+                        [0.05, 0.80, 0.55]]  # token 6
 
         Returns:
-            torch.Tensor: The output tensor of shape (batch_size, seq_len, d_out).
+            Output tensor of shape [6, 2] where:
+            - 6 is the number of tokens (same as input)
+            - 2 is the output dimension (d_out)
         """
         keys = x @ self.W_key
         queries = x @ self.W_query
