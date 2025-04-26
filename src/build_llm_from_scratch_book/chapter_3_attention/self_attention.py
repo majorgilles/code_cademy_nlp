@@ -21,10 +21,10 @@ class SelfAttentionV1(nn.Module):
         self.W_value = nn.Parameter(torch.randn(d_in, d_out))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Forward pass.
+        """Forward pass that computes context vectors using self-attention.
 
         Args:
-            x: Input tensor of shape [6, 3] where:
+            x: Input tensor of e.g. shape [6, 3] where:
                - 6 is the number of tokens
                - 3 is the dimension of each token's embedding
                Example: [[0.43, 0.15, 0.89],  # token 1
@@ -35,9 +35,11 @@ class SelfAttentionV1(nn.Module):
                         [0.05, 0.80, 0.55]]  # token 6
 
         Returns:
-            Output tensor of shape [6, 2] where:
+            Context vectors tensor of shape [6, 2] where:
             - 6 is the number of tokens (same as input)
             - 2 is the output dimension (d_out)
+            Each row represents a context vector that combines information from all input tokens,
+            weighted by their attention scores relative to that token.
         """
         keys = x @ self.W_key
         queries = x @ self.W_query
