@@ -204,56 +204,117 @@ class MultiHeadAttentionWrapper(nn.Module):
 
 
 class MultiHeadAttention(nn.Module):
-    """Multi-head attention implementation."""
+    """Multi-head attention implementation that processes input sequences in parallel using multiple attention heads.
+
+    This implementation follows the standard transformer architecture where:
+    1. Input is split into multiple heads
+    2. Each head performs attention independently
+    3. Results are concatenated and projected back to the original dimension
+
+    The key difference from MultiHeadAttentionWrapper is that this implementation:
+    - Splits the input into heads before attention computation
+    - Performs attention in parallel for all heads
+    - Uses a final projection layer to combine head outputs
+    """
 
     def __init__(
         self, d_in: int, d_out: int, context_length: int, dropout_ratio: float, num_heads: int, qkv_bias: bool = False
     ) -> None:
-        """Initialize the multi-head attention layer."""
+        """Initialize the multi-head attention layer.
+
+        Args:
+            d_in (int): Input dimension of each token's embedding
+            d_out (int): Output dimension of each token's embedding after attention
+            context_length (int): Maximum sequence length the model can process
+            dropout_ratio (float): Dropout probability for attention weights
+            num_heads (int): Number of parallel attention heads
+            qkv_bias (bool): Whether to use bias in query/key/value projections
+        """
         super().__init__()
+        # Ensure output dimension is divisible by number of heads for even splitting
         if (d_out % num_heads) != 0:
             raise ValueError("d_out must be divisible by num_heads")
 
         self.d_out = d_out
         self.num_heads = num_heads
-        self.head_dim = d_out // num_heads
+        self.head_dim = d_out // num_heads  # Dimension of each head's output
+
+        # Projection layers for query, key, and value
         self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
-        self.out_proj = nn.Linear(
-            d_out, d_out
-        )  # project the concatenated context vectors back to the original dimension
+
+        # Final projection layer to combine head outputs
+        self.out_proj = nn.Linear(d_out, d_out)
+
+        # Regularization
         self.dropout = nn.Dropout(dropout_ratio)
-        self.mask: torch.Tensor  # to make mypy happy and avoid raising warnings
+
+        # Causal mask to prevent attending to future tokens
+        self.mask: torch.Tensor  # Type annotation for mypy
         self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Forward pass that computes context vectors using multi-head attention."""
-        batch_size, num_tokens, _ = x.shape
-        keys = self.W_key(x)
-        queries = self.W_query(x)
-        values = self.W_value(x)
+        """Forward pass that computes multi-head attention.
 
+        The process involves:
+        1. Projecting input into query, key, value spaces
+        2. Splitting into multiple heads
+        3. Computing attention scores for each head
+        4. Applying causal masking and softmax
+        5. Computing weighted sum of values
+        6. Concatenating head outputs and projecting back
+
+        Args:
+            x (torch.Tensor): Input tensor of shape [batch_size, num_tokens, d_in]
+                - batch_size: Number of sequences in the batch
+                - num_tokens: Length of each sequence
+                - d_in: Input embedding dimension
+
+        Returns:
+            torch.Tensor: Output tensor of shape [batch_size, num_tokens, d_out]
+                - d_out: Output embedding dimension (same as input if d_out == d_in)
+        """
+        batch_size, num_tokens, _ = x.shape
+
+        # Project input into query, key, value spaces
+        keys = self.W_key(x)      # [batch_size, num_tokens, d_out]
+        queries = self.W_query(x) # [batch_size, num_tokens, d_out]
+        values = self.W_value(x)  # [batch_size, num_tokens, d_out]
+
+        # Reshape for multi-head attention
+        # Split the embedding dimension into num_heads * head_dim
         keys = keys.view(batch_size, num_tokens, self.num_heads, self.head_dim)
         values = values.view(batch_size, num_tokens, self.num_heads, self.head_dim)
-        queries = queries.view(
-            batch_size, num_tokens, self.num_heads, self.head_dim
-        )
+        queries = queries.view(batch_size, num_tokens, self.num_heads, self.head_dim)
 
+        # Transpose to get [batch_size, num_heads, num_tokens, head_dim]
+        # This allows parallel computation across heads
         keys = keys.transpose(1, 2)
         queries = queries.transpose(1, 2)
         values = values.transpose(1, 2)
 
+        # Compute attention scores
+        # [batch_size, num_heads, num_tokens, num_tokens]
         attn_scores = queries @ keys.transpose(2, 3)
-        mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
 
+        # Apply causal mask to prevent attending to future tokens
+        mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
         attn_scores.masked_fill_(mask_bool, -torch.inf)
 
+        # Apply softmax and dropout
         attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
         attn_weights = self.dropout(attn_weights)
 
-        context_vectors = (attn_weights @ values).transpose(1, 2)
+        # Compute weighted sum of values
+        # [batch_size, num_heads, num_tokens, head_dim]
+        context_vectors = (attn_weights @ values)
+
+        # Reshape back to [batch_size, num_tokens, d_out]
+        context_vectors = context_vectors.transpose(1, 2)
         context_vectors = context_vectors.contiguous().view(batch_size, num_tokens, self.d_out)
+
+        # Final projection
         return self.out_proj(context_vectors)
 
 
