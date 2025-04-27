@@ -70,7 +70,7 @@ class SelfAttentionV2(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass that computes context vectors using self-attention.
 
-        We can improve the SelfAttention_v1 implementation further by utilizing PyTorch’s nn.Linear layers, which
+        We can improve the SelfAttention_v1 implementation further by utilizing PyTorch's nn.Linear layers, which
         effectively perform matrix multiplication when the bias units are disabled. Additionally, a significant
         advantage of using nn.Linear instead of manually implementing nn.Parameter(torch.rand(...)) is that nn.Linear
         has an optimized weight initialization scheme, contributing to more stable and effective model training.
@@ -126,6 +126,7 @@ class CausalAttention(nn.Module):
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.dropout = nn.Dropout(dropout_ratio)
+        self.mask: torch.Tensor
         self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -151,7 +152,10 @@ class CausalAttention(nn.Module):
         values = self.W_value(x)
 
         attn_scores = queries @ keys.transpose(1, 2)
-        attn_scores.masked_fill_(self.mask.bool()[:num_tokens, :num_tokens], -torch.inf)
+        # First, let's store the sliced mask in a variable with explicit type
+        mask_slice: torch.Tensor = self.mask[:num_tokens, :num_tokens]
+        # Then convert to boolean and apply the mask
+        attn_scores.masked_fill_(mask_slice.bool(), -torch.inf)
         attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
         attn_weights = self.dropout(attn_weights)
 
