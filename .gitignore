@@ -1,3 +1,4 @@
 .idea/
 .vscode/
 rmm_log.txt
+*.pyc
