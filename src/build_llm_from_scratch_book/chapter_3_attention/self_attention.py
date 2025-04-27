@@ -322,3 +322,12 @@ class MultiHeadAttention(nn.Module):
 
         # Final projection
         return self.out_proj(context_vectors)
+
+
+if __name__ == "__main__":
+    x = torch.randn(2, 6, 3)
+    print(x)
+    print(x.shape)
+    print(x.transpose(1, 2).shape)
+    
+
