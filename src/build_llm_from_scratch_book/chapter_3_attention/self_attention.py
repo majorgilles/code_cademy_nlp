@@ -1,5 +1,6 @@
 """Compact self-attention implementation from scratch."""
 
+import ipdb
 import torch
 from torch import nn
 
@@ -304,6 +305,7 @@ class MultiHeadAttention(nn.Module):
         # [batch_size, num_heads, num_tokens, num_tokens]
         attn_scores = queries @ keys.transpose(2, 3)
 
+        ipdb.set_trace()
         # Apply causal mask to prevent attending to future tokens
         mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
         attn_scores.masked_fill_(mask_bool, -torch.inf)
