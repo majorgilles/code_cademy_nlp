@@ -126,6 +126,9 @@ class CausalAttention(nn.Module):
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.dropout = nn.Dropout(dropout_ratio)
+        #This is a common pattern when working with PyTorch's register_buffer - we need to explicitly type the buffer
+        # to help mypy understand what type it is. The functionality remains exactly the same, we're just helping the
+        #   type checker understand our code better.
         self.mask: torch.Tensor  # to make mypy happy and avoid raising warlings
         self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
