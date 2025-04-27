@@ -229,7 +229,7 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass that computes context vectors using multi-head attention."""
-        batch_size, num_tokens, d_in = x.shape
+        batch_size, num_tokens, _ = x.shape
         keys = self.W_key(x)
         queries = self.W_query(x)
         values = self.W_value(x)
