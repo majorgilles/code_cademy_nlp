@@ -148,7 +148,10 @@ class CausalAttention(nn.Module):
                         [0.05, 0.80, 0.55]]  # token 6
 
         Returns:
-            Context vectors tensor of shape [6, 2] where:
+            Context vectors tensor of shape [2, 6, 2] where:
+            - 2 is the number of batches
+            - 6 is the number of tokens
+            - 2 is the output dimension (d_out)
         """
         # in this case, we have 2 batches of 6 tokens each with 3 dimensions. Num_tokens is 6.
         _, num_tokens, _ = x.shape
