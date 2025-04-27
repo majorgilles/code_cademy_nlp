@@ -111,6 +111,8 @@ class CausalAttention(nn.Module):
     ) -> None:
         """Initialize the causal attention layer.
 
+        We add a  mask to prevent attending to future tokens and a dropout layer to prevent overfitting.
+
         Args:
             d_in (int): The size of the embeddings.
             d_out (int): The size of the output embeddings.
