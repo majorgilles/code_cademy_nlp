@@ -166,7 +166,7 @@ class CausalAttention(nn.Module):
         # transposes transposes only the inner dimensions (1 = rows aka tokens, 2 = columns aka embeddings)
         # the transpose function is used to change the shape of the tensor (keys) from [2, 6, 2] to [2, 2, 6]
         # so that the dot product of queries and keys is valid
-        attn_scores = queries @ keys.transpose(1, 2) 
+        attn_scores = queries @ keys.transpose(1, 2)
         # First, let's store the sliced mask in a variable with explicit type
         mask_slice: torch.Tensor = self.mask[:num_tokens, :num_tokens]
         # Then convert to boolean and apply the mask
