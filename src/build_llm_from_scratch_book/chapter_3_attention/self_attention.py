@@ -118,6 +118,7 @@ class CausalAttention(nn.Module):
             d_out (int): The size of the output embeddings.
             context_length (int): The length of the context window.
             dropout_ratio (float): The dropout ratio.
+            qkv_bias (bool): Whether to use query|key|value (QKV) bias in the query, key, and value matrices.
         """
         super().__init__()
         self.d_out = d_out
@@ -144,7 +145,7 @@ class CausalAttention(nn.Module):
         Returns:
             Context vectors tensor of shape [6, 2] where:
         """
-        b, num_tokens, d_in = x.shape
+        _, num_tokens, _ = x.shape
         keys = self.W_key(x)
         queries = self.W_query(x)
         values = self.W_value(x)
