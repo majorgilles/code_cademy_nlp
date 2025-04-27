@@ -325,9 +325,12 @@ class MultiHeadAttention(nn.Module):
 
 
 if __name__ == "__main__":
-    x = torch.randn(2, 6, 3)
-    print(x)
-    print(x.shape)
-    print(x.transpose(1, 2).shape)
-    
+    torch.manual_seed(123)
+    batch_size, context_length, d_in, d_out, num_heads = 2, 6, 3, 2, 2
+    mha = MultiHeadAttention(d_in, d_out, context_length, 0.0, num_heads=2)
+    batch = torch.randn(batch_size, context_length, d_in)
+    context_vecs = mha(batch)
+    print(context_vecs)
+    print("context_vecs.shape:", context_vecs.shape)
+
 
