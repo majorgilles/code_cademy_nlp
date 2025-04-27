@@ -126,7 +126,7 @@ class CausalAttention(nn.Module):
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.dropout = nn.Dropout(dropout_ratio)
-        self.mask: torch.Tensor
+        self.mask: torch.Tensor  # to make mypy happy and avoid raising warlings
         self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
