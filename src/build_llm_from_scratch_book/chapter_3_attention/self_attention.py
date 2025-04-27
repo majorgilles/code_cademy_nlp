@@ -201,3 +201,30 @@ class MultiHeadAttentionWrapper(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass that computes context vectors using multi-head attention."""
         return torch.cat([head(x) for head in self.heads], dim=-1)
+
+
+class MultiHeadAttention(nn.Module):
+    """Multi-head attention implementation."""
+
+    def __init__(
+        self, d_in: int, d_out: int, context_length: int, dropout_ratio: float, num_heads: int, qkv_bias: bool = False
+    ) -> None:
+        """Initialize the multi-head attention layer."""
+        super().__init__()
+        assert (d_out % num_heads) == 0, "d_out must be divisible by num_heads"
+
+        self.d_out = d_out
+        self.num_heads = num_heads
+        self.head_dim = d_out // num_heads
+        self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)
+        self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
+        self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
+        self.out_proj = nn.Linear(
+            d_out, d_out
+        )  # project the concatenated context vectors back to the original dimension
+        self.dropout = nn.Dropout(dropout_ratio)
+        self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass that computes context vectors using multi-head attention."""
+        pass
