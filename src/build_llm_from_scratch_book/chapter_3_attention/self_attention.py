@@ -301,8 +301,10 @@ class MultiHeadAttention(nn.Module):
         values = values.transpose(1, 2)
 
         # Compute attention scores
-        # [batch_size, num_heads, num_tokens, num_tokens]
-        attn_scores = queries @ keys.transpose(2, 3)
+        # First transpose keys to [batch_size, num_heads, head_dim, num_tokens]
+        transposed_keys = keys.transpose(2, 3)
+        # Then compute attention scores [batch_size, num_heads, num_tokens, num_tokens]
+        attn_scores = queries @ transposed_keys
 
         # Apply causal mask to prevent attending to future tokens
         mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
@@ -316,8 +318,11 @@ class MultiHeadAttention(nn.Module):
         # [batch_size, num_heads, num_tokens, head_dim]
         context_vectors = attn_weights @ values
 
-        # Reshape back to [batch_size, num_tokens, d_out]
+        # First transpose to get heads and dimensions together
+        # [batch_size, num_tokens, num_heads, head_dim]
         context_vectors = context_vectors.transpose(1, 2)
+        # Then reshape to combine head outputs into final dimension
+        # [batch_size, num_tokens, d_out] where d_out = num_heads * head_dim
         context_vectors = context_vectors.contiguous().view(batch_size, num_tokens, self.d_out)
 
         # Final projection
@@ -379,17 +384,20 @@ if __name__ == "__main__":
     ]
 ]
 
-
-# After transpose(1 ,2)
+# After transpose(1, 2)
 [
     [
         [
-            [[1, 2], [5, 6], [9, 10]],
-            [[3, 4], [7, 8], [11, 12]]
+            [[1, 2], [3, 4]],
+            [[13, 14], [15, 16]]
         ],
         [
-            [[13, 14], [17, 18], [21, 22]],
-            [[15, 16], [19, 20], [23, 24]]
+            [[5, 6], [7, 8]],
+            [[17, 18], [19, 20]]
+        ],
+        [
+            [[9, 10], [11, 12]],
+            [[21, 22], [23, 24]]
         ]
     ]
 ]
