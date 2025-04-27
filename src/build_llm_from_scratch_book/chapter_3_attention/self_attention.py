@@ -278,15 +278,21 @@ class MultiHeadAttention(nn.Module):
         batch_size, num_tokens, _ = x.shape
 
         # Project input into query, key, value spaces
-        keys = self.W_key(x)      # [batch_size, num_tokens, d_out]
-        queries = self.W_query(x) # [batch_size, num_tokens, d_out]
+        keys = self.W_key(x)  # [batch_size, num_tokens, d_out]
+        queries = self.W_query(x)  # [batch_size, num_tokens, d_out]
         values = self.W_value(x)  # [batch_size, num_tokens, d_out]
 
         # Reshape for multi-head attention
         # Split the embedding dimension into num_heads * head_dim
-        keys = keys.view(batch_size, num_tokens, self.num_heads, self.head_dim) # [batch_size, num_tokens, num_heads, head_dim]
-        values = values.view(batch_size, num_tokens, self.num_heads, self.head_dim) # [batch_size, num_tokens, num_heads, head_dim]
-        queries = queries.view(batch_size, num_tokens, self.num_heads, self.head_dim) # [batch_size, num_tokens, num_heads, head_dim]
+        keys = keys.view(
+            batch_size, num_tokens, self.num_heads, self.head_dim
+        )  # [batch_size, num_tokens, num_heads, head_dim]
+        values = values.view(
+            batch_size, num_tokens, self.num_heads, self.head_dim
+        )  # [batch_size, num_tokens, num_heads, head_dim]
+        queries = queries.view(
+            batch_size, num_tokens, self.num_heads, self.head_dim
+        )  # [batch_size, num_tokens, num_heads, head_dim]
 
         # Transpose to get [batch_size, num_heads, num_tokens, head_dim]
         # This allows parallel computation across heads
@@ -308,7 +314,7 @@ class MultiHeadAttention(nn.Module):
 
         # Compute weighted sum of values
         # [batch_size, num_heads, num_tokens, head_dim]
-        context_vectors = (attn_weights @ values)
+        context_vectors = attn_weights @ values
 
         # Reshape back to [batch_size, num_tokens, d_out]
         context_vectors = context_vectors.transpose(1, 2)
@@ -316,6 +322,3 @@ class MultiHeadAttention(nn.Module):
 
         # Final projection
         return self.out_proj(context_vectors)
-
-
-

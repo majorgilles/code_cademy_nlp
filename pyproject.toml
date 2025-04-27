@@ -1,68 +1,45 @@
 [project]
-name = "src"
+name = "code_cademy_nlp"
 version = "0.1.0"
-description = "Gilles Major Repo for NLP experiements"
+description = "Gilles Major Repo for NLP experiments"
 readme = "README.md"
 requires-python = ">=3.12"
-
-[tool.poetry]
-name = "src"
-version = "0.1.0"
-description = "Gilles Major Repo for NLP experiements"
-authors = ["Gilles Major"]
-readme = "README.md"
-packages = [
-    { include = "src" }
+authors = [
+    {name = "Gilles Major"}
+]
+dependencies = [
+    "matplotlib>=3.10.1",
+    "nltk>=3.9.1",
+    "notebook>=7.2.2",
+    "numpy>=2.2.4",
+    "pandas>=2.2.3",
+    "pydantic>=2.10.4",
+    "seaborn>=0.13.2",
+    "scikit-learn>=1.6.1", 
+    "scipy>=1.14.1",
+    "spacy>=3.8.5; platform_system != 'Windows'",
+    "tiktoken>=0.9.0",
+    "torch>=2.6.0",
+    "types-decorator>=5.2.0.20250324",
 ]
 
-[[tool.poetry.source]]
-name = "nvidia"
-url = "https://pypi.nvidia.com"
-priority = "explicit"
-
-[tool.poetry.dependencies]
-python = ">=3.12,<3.14"
-# public pypi libs
-matplotlib = "^3.10.1"
-nltk = "^3.9.1"
-notebook = "^7.2.2"
-numpy = "^2.2.4"
-pandas = "^2.2.3"
-pydantic =  "^2.10.4"
-seaborn = "^0.13.2"
-scikit-learn = "^1.6.1"
-scipy = "^1.14.1"
-spacy = { version = "^3.8.5", markers = "platform_system != 'Windows'" }
-tiktoken = "^0.9.0"
-torch = "^2.6.0"
-types-decorator = "^5.2.0.20250324"
-# nvidia libs
-#cudf-cu12 = {version = "^24.12.0", source = "nvidia"}
-#dask-cudf-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cucim-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cuml-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cuspatial-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cuvs-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cuxfilter-cu12 = {version= "^24.12.0", source = "nvidia"}
-#cuproj-cu12 = {version= "^24.12.0", source = "nvidia"}
-#nx-cugraph-cu12 = {version= "^24.12.0", source = "nvidia"}
-#raft-dask-cu12 = {version= "^24.12.0", source = "nvidia"}
-#pylibraft-cu12 = {version= "^24.12.0", source = "nvidia"}
-
-
-[tool.poetry.group.dev.dependencies]
-mypy = "==1.12.1"
-pre-commit = "==3.8.0"
-pytest = "==8.3.4"
-types-Deprecated = "==1.2.15.20241117"
-types-requests = "==2.31.0.6"
-types-python-dateutil = "^2.9.0.20241003"
-ruff = "==0.8.3"
+[project.optional-dependencies]
+dev = [
+    "mypy==1.12.1",
+    "pre-commit==3.8.0",
+    "pytest==8.3.4",
+    "types-Deprecated==1.2.15.20241117",
+    "types-requests==2.31.0.6",
+    "types-python-dateutil>=2.9.0.20241003",
+    "ruff==0.8.3",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -108,38 +85,25 @@ extend-select = [
     "COM", # flake8-commas
     "D", # pydocstyle
     "DJ", # flake8-django
-    #"DTZ", # flake8-datetimez
     "E", # pycodestyle
-    #"EM",  # flake8-errmsg
-    #"ERA",  # flake8-eradicate (commented out code)
     "FA", # flake8-future-annotations
-    #"FBT",  # flake8-boolean-trap
-    #"G",  # flake8-logging-format
-    #"FIX",  # flake8-fixme
     "I", # isort
     "ICN", # flake8-import-conventions
     "INP", # flake8-no-pep420
     "INT", # flake8-gettext
     "ISC", # flake8-implicit-str-concat
     "LOG", # flake8-logging
-    #"N", # pep8-naming
     "PERF", # perflint
     "PIE", # flake8-pie
     "PTH", # flake8-pathlib
     "PL", # pylint
-    #"PYI", # flake8-pyi
-    #"PT",  # flake8-pytest-style
     "Q", # flake8-quotes
     "RSE", # flake8-raise
     "RET", # flake8-return
-    #"RUF",  # Ruff-specific rules
-    #"S",  # flake8-bandit (security)
     "S101", # flake8-assert
     "SIM", # flake8-simplify
-    #"SLOT",  # flake8-slots
     "TID", # flake8-tidy-imports
     "TCH", # flake8-type-checking
-    #"TRY",  # tryceratops (not used in the project, but might be worthwile)
     "UP", # pyupgrade
     "W", # pycodestyle
 ]
@@ -193,7 +157,6 @@ ignore = [
 "test/integration/**" = [
     "PLW0603",
 ]
-
 
 [tool.ruff.lint.flake8-type-checking]
 runtime-evaluated-base-classes = ["pydantic.BaseModel"]
