@@ -303,6 +303,7 @@ class MultiHeadAttention(nn.Module):
         # Compute attention scores
         # [batch_size, num_heads, num_tokens, num_tokens]
         attn_scores = queries @ keys.transpose(2, 3)
+        print("DEBUG: About to enter pdb...")
 
         # Apply causal mask to prevent attending to future tokens
         mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
