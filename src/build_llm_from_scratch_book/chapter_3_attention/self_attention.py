@@ -150,7 +150,7 @@ class CausalAttention(nn.Module):
             Context vectors tensor of shape [6, 2] where:
         """
         # in this case, we have 2 batches of 6 tokens each with 3 dimensions. Num_tokens is 6.
-        _, num_tokens, _ = x.shape          
+        _, num_tokens, _ = x.shape
         keys = self.W_key(x)
         queries = self.W_query(x)
         values = self.W_value(x)
