@@ -163,7 +163,8 @@ class CausalAttention(nn.Module):
         queries = self.W_query(x)  # shape: [2, 6, 2]
         values = self.W_value(x)  # shape: [2, 6, 2]
 
-        attn_scores = queries @ keys.transpose(1, 2)
+        # transposes transposes only the inner dimensions (1 = rows aka tokens, 2 = columns aka embeddings)
+        attn_scores = queries @ keys.transpose(1, 2)  # shape: [2, 6, 6]
         # First, let's store the sliced mask in a variable with explicit type
         mask_slice: torch.Tensor = self.mask[:num_tokens, :num_tokens]
         # Then convert to boolean and apply the mask
