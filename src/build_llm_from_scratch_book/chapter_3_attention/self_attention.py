@@ -126,17 +126,18 @@ class CausalAttention(nn.Module):
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.dropout = nn.Dropout(dropout_ratio)
-        #This is a common pattern when working with PyTorch's register_buffer - we need to explicitly type the buffer
+        # This is a common pattern when working with PyTorch's register_buffer - we need to explicitly type the buffer
         # to help mypy understand what type it is. The functionality remains exactly the same, we're just helping the
         #   type checker understand our code better.
-        self.mask: torch.Tensor  # to make mypy happy and avoid raising warlings
+        self.mask: torch.Tensor  # to make mypy happy and avoid raising warnings
         self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass that computes context vectors using causal attention.
 
         Args:
-            x: Input tensor of e.g. shape [6, 3] where:
+            x: Input tensor of e.g. shape [2, 6, 3] where:
+               - 2 is the number of batches
                - 6 is the number of tokens
                - 3 is the dimension of each token's embedding
                Example: [[0.43, 0.15, 0.89],  # token 1
