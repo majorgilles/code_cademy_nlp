@@ -380,7 +380,7 @@ if __name__ == "__main__":
 ]
 
 
-# After transpose
+# After transpose(1 ,2)
 [
     [
         [
