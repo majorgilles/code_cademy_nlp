@@ -155,9 +155,13 @@ class CausalAttention(nn.Module):
         """
         # in this case, we have 2 batches of 6 tokens each with 3 dimensions. Num_tokens is 6.
         _, num_tokens, _ = x.shape
-        keys = self.W_key(x)
-        queries = self.W_query(x)
-        values = self.W_value(x)
+        # This works because of how PyTorch's nn.Linear layers handle batched inputs
+        # The linear layer will apply the same transformation to each token in the batch independently
+        # So, for example, if we have a batch of 2 tokens, the linear layer will apply the same transformation
+        # to each token.
+        keys = self.W_key(x)  # shape: [2, 6, 2]
+        queries = self.W_query(x)  # shape: [2, 6, 2]
+        values = self.W_value(x)  # shape: [2, 6, 2]
 
         attn_scores = queries @ keys.transpose(1, 2)
         # First, let's store the sliced mask in a variable with explicit type
