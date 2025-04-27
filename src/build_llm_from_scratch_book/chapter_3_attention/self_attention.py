@@ -175,3 +175,29 @@ class CausalAttention(nn.Module):
         attn_weights = self.dropout(attn_weights)
 
         return attn_weights @ values
+
+
+class MultiHeadAttentionWrapper(nn.Module):
+    """Multi-head attention wrapper implementation."""
+
+    def __init__(
+        self, d_in: int, d_out: int, context_length: int, dropout_ratio: float, num_heads: int, qkv_bias: bool = False
+    ) -> None:
+        """Initialize the multi-head attention layer.
+
+        Args:
+            d_in (int): The size of the embeddings.
+            d_out (int): The size of the output embeddings.
+            context_length (int): The length of the context window.
+            dropout_ratio (float): The dropout ratio.
+            num_heads (int): The number of attention heads.
+            qkv_bias (bool): Whether to use query|key|value (QKV) bias in the query, key, and value matrices.
+        """
+        super().__init__()
+        self.heads = nn.ModuleList(
+            [CausalAttention(d_in, d_out, context_length, dropout_ratio, qkv_bias) for _ in range(num_heads)]
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass that computes context vectors using multi-head attention."""
+        return torch.cat([head(x) for head in self.heads], dim=-1)
