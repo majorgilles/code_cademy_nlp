@@ -239,12 +239,12 @@ class MultiHeadAttention(nn.Module):
         self.num_heads = num_heads
         self.head_dim = d_out // num_heads  # Dimension of each head's output
 
-        # Projection layers for query, key, and value
+        # Projection (trainable weights) layers for query, key, and value
         self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_key = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
 
-        # Final projection layer to combine head outputs
+        # Final projection (trainable weights) layer to combine head outputs
         self.out_proj = nn.Linear(d_out, d_out)
 
         # Regularization
@@ -284,9 +284,9 @@ class MultiHeadAttention(nn.Module):
 
         # Reshape for multi-head attention
         # Split the embedding dimension into num_heads * head_dim
-        keys = keys.view(batch_size, num_tokens, self.num_heads, self.head_dim)
-        values = values.view(batch_size, num_tokens, self.num_heads, self.head_dim)
-        queries = queries.view(batch_size, num_tokens, self.num_heads, self.head_dim)
+        keys = keys.view(batch_size, num_tokens, self.num_heads, self.head_dim) # [batch_size, num_tokens, num_heads, head_dim]
+        values = values.view(batch_size, num_tokens, self.num_heads, self.head_dim) # [batch_size, num_tokens, num_heads, head_dim]
+        queries = queries.view(batch_size, num_tokens, self.num_heads, self.head_dim) # [batch_size, num_tokens, num_heads, head_dim]
 
         # Transpose to get [batch_size, num_heads, num_tokens, head_dim]
         # This allows parallel computation across heads
