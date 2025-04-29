@@ -10,13 +10,13 @@ from torch import nn
 class GPTConfig:
     """Configuration for the GPT model."""
 
-    vocab_size: int # tokenizer vocab size
-    embed_dim: int # embedding dimension
-    context_length: int # context length
-    drop_rate: float # dropout rate
-    n_layers: int # number of layers
-    n_heads: int # number of attention heads
-    qkv_bias: bool # whether to use bias in the qkv layer
+    vocab_size: int  # tokenizer vocab size
+    embed_dim: int  # embedding dimension
+    context_length: int  # context length
+    drop_rate: float  # dropout rate
+    n_layers: int  # number of layers
+    n_heads: int  # number of attention heads
+    qkv_bias: bool  # whether to use bias in the qkv layer
 
 
 class DummyGPTModel(nn.Module):
