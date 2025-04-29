@@ -26,7 +26,7 @@ class DummyGPTModel(nn.Module):
         self.tok_emb = nn.Embedding(cfg.vocab_size, cfg.embed_dim)
         self.pos_emb = nn.Embedding(cfg.context_length, cfg.embed_dim)
         self.drop_emb = nn.Dropout(cfg.drop_rate)
-        self.trf_blocks == nn.Sequential(*[DummyTransformerBlock(cfg) for _ in range(cfg.n_layers)])
+        self.trf_blocks = nn.Sequential(*[DummyTransformerBlock(cfg) for _ in range(cfg.n_layers)])
         self.final_norm = DummyLayerNorm(cfg.embed_dim)
         self.out_head = nn.Linear(cfg.embed_dim, cfg.vocab_size, bias=False)
 
