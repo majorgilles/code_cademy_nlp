@@ -30,9 +30,12 @@ class DummyGPTModel(nn.Module):
         self.final_norm = DummyLayerNorm(cfg.embed_dim)
         self.out_head = nn.Linear(cfg.embed_dim, cfg.vocab_size, bias=False)
 
-    def forward(self, idx: torch.Tensor) -> torch.Tensor:
+    def forward(self, in_idx: torch.Tensor) -> torch.Tensor:
         """Forward pass of the GPT model."""
-        x = self.tok_emb(idx) + self.pos_emb(torch.arange(idx.size(1)))
+        _, seq_len = in_idx.shape
+        tok_embeds = self.tok_emb(in_idx)
+        pos_embeds = self.pos_emb(torch.arange(seq_len, device=in_idx.device))
+        x = tok_embeds + pos_embeds
         x = self.drop_emb(x)
         x = self.trf_blocks(x)
         x = self.final_norm(x)
