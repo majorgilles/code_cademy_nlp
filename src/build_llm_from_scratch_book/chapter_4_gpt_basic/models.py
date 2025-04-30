@@ -177,6 +177,14 @@ class FeedForward(nn.Module):
     (expand -> process -> compress) is a common pattern in transformer models that helps
     capture more complex relationships while maintaining computational efficiency.
 
+    Note on tensor dimensions:
+    The Linear layer only operates on the last dimension of the input tensor. For example,
+    if the input is of shape (batch_size, seq_len, embed_dim), the Linear layer will:
+    1. Keep the first two dimensions (batch_size, seq_len) unchanged
+    2. Only transform the last dimension (embed_dim) to (4 * embed_dim)
+    This means the output shape will be (batch_size, seq_len, 4 * embed_dim)
+    The same applies to the second Linear layer which compresses back to (batch_size, seq_len, embed_dim)
+
     Args:
         embed_dim (int): The dimension of the input features
         hidden_dim (int): The dimension of the hidden features
@@ -191,9 +199,13 @@ class FeedForward(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             # Expand the embedding dimension by 4x to allow for more complex pattern learning
+            # Input shape: (batch_size, seq_len, embed_dim)
+            # Output shape: (batch_size, seq_len, 4 * embed_dim)
             nn.Linear(cfg.embed_dim, 4 * cfg.embed_dim),
             GELU(),
             # Compress back to the original embedding dimension
+            # Input shape: (batch_size, seq_len, 4 * embed_dim)
+            # Output shape: (batch_size, seq_len, embed_dim)
             nn.Linear(4 * cfg.embed_dim, cfg.embed_dim),
         )
 
