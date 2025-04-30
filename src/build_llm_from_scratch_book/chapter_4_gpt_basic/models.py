@@ -72,9 +72,13 @@ class LayerNorm(nn.Module):
     """Layer Normalization module that normalizes input features across the last dimension.
 
     Layer Normalization is a technique used to normalize the activations of a neural network
-    layer. It helps stabilize training by normalizing the inputs to each layer, reducing
-    internal covariate shift. This implementation follows the standard layer normalization
-    formula:
+    layer. It helps stabilize training by ensuring that the inputs to each layer have consistent
+    statistics (mean and variance) across different examples in a batch. This is important because
+    as the network trains, the distribution of inputs to each layer can change significantly
+    (a problem known as internal covariate shift), making training unstable. Layer normalization
+    counteracts this by normalizing the inputs to have zero mean and unit variance.
+
+    This implementation follows the standard layer normalization formula:
 
     y = scale * (x - mean) / sqrt(var + eps) + shift
 
