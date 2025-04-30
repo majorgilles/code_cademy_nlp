@@ -66,3 +66,51 @@ class DummyLayerNorm(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Dummy layer norm that just returns the input."""
         return x
+
+
+class LayerNorm(nn.Module):
+    """Layer Normalization module that normalizes input features across the last dimension.
+
+    Layer Normalization is a technique used to normalize the activations of a neural network
+    layer. It helps stabilize training by normalizing the inputs to each layer, reducing
+    internal covariate shift. This implementation follows the standard layer normalization
+    formula:
+
+    y = scale * (x - mean) / sqrt(var + eps) + shift
+
+    where:
+    - x is the input tensor
+    - mean and var are computed across the last dimension
+    - scale and shift are learnable parameters
+    - eps is a small constant for numerical stability
+
+    Attributes:
+        eps (float): Small constant added to variance for numerical stability
+        scale (nn.Parameter): Learnable scaling parameter of shape (embed_dim,)
+        shift (nn.Parameter): Learnable shift parameter of shape (embed_dim,)
+    """
+
+    def __init__(self, embed_dim: int) -> None:
+        """Initialize the Layer Normalization module.
+
+        Args:
+            embed_dim (int): The dimension of the input features to be normalized
+        """
+        super().__init__()
+        self.eps = 1e-5
+        self.scale = nn.Parameter(torch.ones(embed_dim))
+        self.shift = nn.Parameter(torch.zeros(embed_dim))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Apply layer normalization to the input tensor.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
+
+        Returns:
+            torch.Tensor: Normalized tensor of the same shape as input
+        """
+        mean = x.mean(dim=-1, keepdim=True)
+        var = x.var(dim=-1, keepdim=True)
+        norm_x = (x - mean) / torch.sqrt(var + self.eps)
+        return self.scale * norm_x + self.shift
