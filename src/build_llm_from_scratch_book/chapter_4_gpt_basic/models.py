@@ -118,3 +118,33 @@ class LayerNorm(nn.Module):
         var = x.var(dim=-1, keepdim=True, unbiased=False)
         norm_x = (x - mean) / torch.sqrt(var + self.eps)
         return self.scale * norm_x + self.shift
+
+
+class GELU(nn.Module):
+    """Gaussian Error Linear Unit (GELU) activation function.
+
+    The GELU activation function is defined as:
+
+    gelu(x) = 0.5 * x * (1 + erf(x / sqrt(2)))
+
+    where erf is the error function.
+
+    Attributes:
+        scale (float): Scaling factor for the activation function
+    """
+
+    def __init__(self, scale: float = 1.0) -> None:
+        """Initialize the GELU activation function.
+
+        Args:
+            scale (float): Scaling factor for the activation function
+        """
+        super().__init__()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass of the GELU activation function.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
+        """
+        return 0.5 * x * (1 + torch.tanh(torch.sqrt(torch.tensor(2.0 / torch.pi)) * (x + 0.044715 * torch.pow(x, 3))))
