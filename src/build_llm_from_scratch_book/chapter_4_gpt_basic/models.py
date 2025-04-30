@@ -160,3 +160,38 @@ class GELU(nn.Module):
             x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
         """
         return 0.5 * x * (1 + torch.tanh(torch.sqrt(torch.tensor(2.0 / torch.pi)) * (x + 0.044715 * torch.pow(x, 3))))
+
+
+class FeedForward(nn.Module):
+    """Feed-Forward network that applies a linear transformation followed by a non-linear activation function.
+
+    This module consists of two linear transformations with a GELU activation function in between.
+    The first linear transformation projects the input to a higher-dimensional space,
+    while the second linear transformation projects it back to the original dimension.
+    The GELU activation function introduces non-linearity between the two linear transformations.
+
+    Args:
+        embed_dim (int): The dimension of the input features
+        hidden_dim (int): The dimension of the hidden features
+    """
+
+    def __init__(self, cfg: GPTConfig) -> None:
+        """Initialize the FeedForward module.
+
+        Args:
+            cfg (GPTConfig): The configuration for the FeedForward module
+        """
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(cfg.embed_dim, 4 * cfg.embed_dim),
+            GELU(),
+            nn.Linear(4 * cfg.embed_dim, cfg.embed_dim),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass of the FeedForward module.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
+        """
+        return self.layers(x)
