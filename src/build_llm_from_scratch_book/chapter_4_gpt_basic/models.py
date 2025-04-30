@@ -146,6 +146,7 @@ class GELU(nn.Module):
 
         The non approximate version is:
         gelu(x) = 0.5 * x * (1 + erf(x / sqrt(2)))
+        (erf is the error function, which is the integral of the Gaussian distribution)
 
         The approximate version is:
         gelu(x) = 0.5 * x * (1 + tanh(sqrt(2 / pi) * (x + 0.044715 * x^3)))
