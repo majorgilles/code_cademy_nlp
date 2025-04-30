@@ -76,7 +76,7 @@ class LayerNorm(nn.Module):
     statistics (mean and variance) across different examples in a batch. This is important because
     as the network trains, the distribution of inputs to each layer can change significantly
     (a problem known as internal covariate shift), making training unstable. Layer normalization
-    counteracts this by normalizing the inputs to have zero mean and unit variance.
+    counteracts this by normalizing the inputs to have zero mean and unit variance (1).
 
     This implementation follows the standard layer normalization formula:
 
