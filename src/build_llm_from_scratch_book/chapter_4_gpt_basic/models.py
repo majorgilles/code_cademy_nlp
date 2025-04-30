@@ -144,6 +144,17 @@ class GELU(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass of the GELU activation function.
 
+        The non approximate version is:
+        gelu(x) = 0.5 * x * (1 + erf(x / sqrt(2)))
+
+        The approximate version is:
+        gelu(x) = 0.5 * x * (1 + tanh(sqrt(2 / pi) * (x + 0.044715 * x^3)))
+
+        Why the approximate version?
+        - The exact version is computationally expensive to compute.
+        - The approximate version is a good approximation of the exact version.
+        - The approximate version is faster to compute.
+
         Args:
             x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
         """
