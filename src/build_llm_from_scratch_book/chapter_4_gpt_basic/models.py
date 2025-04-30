@@ -170,6 +170,13 @@ class FeedForward(nn.Module):
     while the second linear transformation projects it back to the original dimension.
     The GELU activation function introduces non-linearity between the two linear transformations.
 
+    The first linear layer expands the embedding dimension by a factor of 4 (4 * embed_dim).
+    This expansion allows the network to learn more complex patterns by providing a larger
+    intermediate representation space. The second linear layer then compresses this expanded
+    representation back to the original embedding dimension. This "bottleneck" architecture
+    (expand -> process -> compress) is a common pattern in transformer models that helps
+    capture more complex relationships while maintaining computational efficiency.
+
     Args:
         embed_dim (int): The dimension of the input features
         hidden_dim (int): The dimension of the hidden features
@@ -183,8 +190,10 @@ class FeedForward(nn.Module):
         """
         super().__init__()
         self.layers = nn.Sequential(
+            # Expand the embedding dimension by 4x to allow for more complex pattern learning
             nn.Linear(cfg.embed_dim, 4 * cfg.embed_dim),
             GELU(),
+            # Compress back to the original embedding dimension
             nn.Linear(4 * cfg.embed_dim, cfg.embed_dim),
         )
 
