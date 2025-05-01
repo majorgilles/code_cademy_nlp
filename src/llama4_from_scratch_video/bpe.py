@@ -93,7 +93,8 @@ def merge_pair(pair_to_merge: tuple[str, str], splits: dict) -> dict:
 print("Merged splits:", merge_pair(("T", "h"), word_splits))
 print("Merged splits:", merge_pair(("i", "s"), word_splits))
 
-def iterate_algo(current_splits: dict, num_merges: int) -> tuple[dict, dict]:
+def iterate_algo(current_splits: dict, num_merges: int, vocabulary: list[str]) -> tuple[dict, dict, list[str]]:
+    """Iterate the BPE algorithm."""
     merges = {}
     print("\n--- Starting BPT merges ---")
     print(f"Initial Splits: {current_splits}")
@@ -126,15 +127,17 @@ def iterate_algo(current_splits: dict, num_merges: int) -> tuple[dict, dict]:
         print(f"Updated merges: {merges}")
 
         print("-" * 30)
-    return merges, current_splits
+    return merges, current_splits, vocab
 
 num_merges = 15
-merges, current_splits = iterate_algo(word_splits, num_merges=num_merges)
+merges, current_splits, vocab = iterate_algo(word_splits, num_merges=num_merges, vocabulary=vocab)
 
 print("\n--- Final merges ---")
-print(merges)
+for pair_token, merged_token in merges.items():
+    print(f"{pair_token} -> {merged_token}")
 
 print("\n--- Final splits ---")
 print(current_splits)
 
-
+print("\n--- Final vocabulary ---")
+print(vocab)
