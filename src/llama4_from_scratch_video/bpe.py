@@ -2,6 +2,7 @@
 
 Create a BPE from scratch.
 """
+
 corpus = [
     "This is the first document.",
     "This document is the second document.",
@@ -20,3 +21,17 @@ vocab.sort()
 
 print("Initial vocab:", vocab)
 print("Initial vocab length:", len(vocab))
+
+
+word_splits = {}
+for doc in corpus:
+    words = doc.split(" ")
+    for word in words:
+        if word:
+            char_list = list(word) + [end_of_word]
+            word_tuple = tuple(char_list)
+            if word_tuple not in word_splits:
+                word_splits[word_tuple] = 0
+            word_splits[word_tuple] += 1
+
+print("Word splits:", word_splits)
