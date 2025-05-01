@@ -48,4 +48,47 @@ def get_pair_stats(splits: dict) -> dict:
             pair_count[pair] += freq
     return pair_count
 
+
 print("Pair counts:", get_pair_stats(word_splits))
+
+
+def merge_pair(pair_to_merge: tuple[str, str], splits: dict) -> dict:
+    """Merges a pair of adjacent symbols in the vocabulary splits.
+
+    This function is a key part of the Byte Pair Encoding (BPE) algorithm. It takes a pair of symbols
+    that should be merged and updates all occurrences of this pair in the vocabulary splits by
+    replacing them with a single merged token.
+
+    Args:
+        pair_to_merge: A tuple containing two adjacent symbols to be merged (e.g., ('T', 'h')).
+        splits: A dictionary mapping word tuples to their frequencies in the corpus.
+
+    Returns:
+        A new dictionary with the same structure as splits, but where all occurrences of the specified
+        pair have been replaced with a single merged token.
+
+    Example:
+        If pair_to_merge is ('T', 'h') and splits contains ('T', 'h', 'i', 's', '</w>'),
+        the result will contain ('Th', 'i', 's', '</w>') with the same frequency.
+    """
+    new_splits = {}
+    (first, second) = pair_to_merge
+    merged_token = first + second
+    for word_tuple, freq in splits.items():
+        symbols = list(word_tuple)
+        new_symbols = []
+        i = 0
+        num_symbols = len(symbols)
+        while i < num_symbols:
+            if i < num_symbols - 1 and symbols[i] == first and symbols[i + 1] == second:
+                new_symbols.append(merged_token)
+                i += 2
+            else:
+                new_symbols.append(symbols[i])
+                i += 1
+        new_splits[tuple(new_symbols)] = freq
+    return new_splits
+
+
+print("Merged splits:", merge_pair(("T", "h"), word_splits))
+print("Merged splits:", merge_pair(("i", "s"), word_splits))
