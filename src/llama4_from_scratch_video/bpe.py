@@ -92,3 +92,49 @@ def merge_pair(pair_to_merge: tuple[str, str], splits: dict) -> dict:
 
 print("Merged splits:", merge_pair(("T", "h"), word_splits))
 print("Merged splits:", merge_pair(("i", "s"), word_splits))
+
+def iterate_algo(current_splits: dict, num_merges: int) -> tuple[dict, dict]:
+    merges = {}
+    print("\n--- Starting BPT merges ---")
+    print(f"Initial Splits: {current_splits}")
+    print("-" * 30)
+
+    for i in range(num_merges):
+        print(f"\nMerge iteratation {i+1}/{num_merges}")
+
+        pair_stats = get_pair_stats(current_splits)
+        if not pair_stats:
+            print("No more pairs to merge.")
+            break
+
+        sorted_pairs = sorted(pair_stats.items(), key = lambda item: item[1], reverse=True)
+        print(f"Top 5 pair frequencies: {sorted_pairs[:5]}")
+
+        best_pair = max(pair_stats, key=pair_stats.get)
+        best_freq = pair_stats[best_pair]
+        print(f"Found best pair: {best_pair} with frequency {best_freq}")
+
+        current_splits = merge_pair(best_pair, current_splits)
+        new_token = best_pair[0] + best_pair[1]
+        print(f"Merging {best_pair} into {new_token}")
+        print(f"Splits after merge: {current_splits}")
+
+        vocab.append(new_token)
+        print(f"Updated vocab: {vocab}")
+
+        merges[best_pair] = new_token
+        print(f"Updated merges: {merges}")
+
+        print("-" * 30)
+    return merges, current_splits
+
+num_merges = 15
+merges, current_splits = iterate_algo(word_splits, num_merges=num_merges)
+
+print("\n--- Final merges ---")
+print(merges)
+
+print("\n--- Final splits ---")
+print(current_splits)
+
+
