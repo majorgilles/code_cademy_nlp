@@ -28,8 +28,7 @@ for doc in corpus:
     words = doc.split(" ")
     for word in words:
         if word:
-            char_list = list(word) + [end_of_word]
-            word_tuple = tuple(char_list)
+            word_tuple = tuple(list(word) + [end_of_word])
             if word_tuple not in word_splits:
                 word_splits[word_tuple] = 0
             word_splits[word_tuple] += 1
