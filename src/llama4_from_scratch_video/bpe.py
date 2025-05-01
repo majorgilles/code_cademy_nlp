@@ -3,6 +3,8 @@
 Create a BPE from scratch.
 """
 
+import collections
+
 corpus = [
     "This is the first document.",
     "This document is the second document.",
@@ -34,3 +36,16 @@ for doc in corpus:
             word_splits[word_tuple] += 1
 
 print("Word splits:", word_splits)
+
+
+def get_pair_stats(splits: dict) -> dict:
+    """Get the pair counts for all pairs in the splits."""
+    pair_count: dict[tuple[str, str], int] = collections.defaultdict(int)
+    for word_tuple, freq in splits.items():
+        symbols = list(word_tuple)
+        for i in range(len(symbols) - 1):
+            pair = (symbols[i], symbols[i + 1])
+            pair_count[pair] += freq
+    return pair_count
+
+print("Pair counts:", get_pair_stats(word_splits))
