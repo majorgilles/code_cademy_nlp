@@ -110,7 +110,7 @@ def iterate_algo(current_splits: dict, num_merges: int) -> tuple[dict, dict]:
         sorted_pairs = sorted(pair_stats.items(), key = lambda item: item[1], reverse=True)
         print(f"Top 5 pair frequencies: {sorted_pairs[:5]}")
 
-        best_pair = max(pair_stats, key=lambda item: item[1])
+        best_pair = max(pair_stats, key=pair_stats.get)  # type: ignore
         best_freq = pair_stats[best_pair]
         print(f"Found best pair: {best_pair} with frequency {best_freq}")
 
