@@ -11,10 +11,26 @@ def _apply_softmax(attn_scores: torch.Tensor, keys: torch.Tensor) -> torch.Tenso
     1. Scaling the attention scores by 1/√d where d is the head dimension
     2. Applying softmax to get normalized attention weights
 
-    The scaling is crucial because:
-    - Dot products in high dimensions grow with √d due to the central limit theorem
-    - Without scaling, softmax would produce very sharp distributions (some values ≈1, others ≈0)
-    - The scaling factor 1/√d counteracts this effect, keeping attention weights balanced
+    The normalization is crucial for three main reasons:
+
+    1. Meaningful Matrix Multiplication:
+       - The final step of attention is a matrix multiplication: attention_weights @ value_vectors
+       - Without normalization, the raw dot products would not represent meaningful similarity scores
+       - The matrix multiplication would produce arbitrary, uninterpretable results
+       - Normalization ensures the weights properly scale the value vectors in a meaningful way
+
+    2. Meaningful Attention Weights:
+       - Raw dot products between queries and keys can be any real number
+       - These raw scores don't have inherent meaning as weights
+       - Softmax converts these arbitrary scores into a probability distribution
+       - This ensures each token's attention weights sum to 1, making them interpretable
+       - Without normalization, we couldn't meaningfully compare attention weights
+
+    3. Scaling for High Dimensions:
+       - Dot products in high dimensions grow with √d due to the central limit theorem
+       - Without scaling, softmax would produce very sharp distributions (some values ≈1, others ≈0)
+       - The scaling factor 1/√d counteracts this effect, keeping attention weights balanced
+       - This prevents self-attention from becoming too focused on a single token
 
     Args:
         attn_scores (torch.Tensor): Raw attention scores from query-key dot products
@@ -23,7 +39,8 @@ def _apply_softmax(attn_scores: torch.Tensor, keys: torch.Tensor) -> torch.Tenso
     Returns:
         torch.Tensor: Normalized attention weights after applying scaled softmax
     """
-    return torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
+    scale = keys.shape[-1] ** 0.5
+    return torch.softmax(attn_scores / scale, dim=-1)
 
 
 class SelfAttentionV1(nn.Module):
