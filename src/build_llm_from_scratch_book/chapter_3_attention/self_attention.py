@@ -11,12 +11,23 @@ def _apply_softmax(attn_scores: torch.Tensor, keys: torch.Tensor) -> torch.Tenso
     1. Scaling raw query-key dot products by 1/√d, where d is the dimensionality of the key vectors.
     2. Applying softmax to convert the scores into a probability distribution.
 
-    Rationale:
+    The full formula for context vector calculation is:
+
+    Attention(Q, K, V) = softmax((Q @ K.T) / sqrt(d)) @ V
+
+    So we compute the attention weights by:
+    attn_scores = queries @ keys.T
+    attn_weights = _apply_softmax(attn_scores, keys)
+    Then we compute the context vector by:
+    context_vector = attn_weights @ values
+
+    Scaling explanation:
 
     - **Scaling for numerical stability**:
       In high-dimensional spaces, dot products can become large in magnitude, which causes
-      the softmax output to be overly sharp (i.e., nearly one-hot). Scaling by √d mitigates this effect,
-      producing more balanced and useful gradients during training.
+      the softmax output to be overly sharp (i.e., nearly one-hot).
+      Scaling by √d (the square root of the dimensionality of the key vectors)  mitigates this
+       effect, producing more balanced and useful gradients during training.
 
     - **Softmax for interpretability**:
       Raw dot products don't naturally form a probability distribution. Applying softmax
