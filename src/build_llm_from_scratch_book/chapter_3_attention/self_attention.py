@@ -4,8 +4,35 @@ import torch
 from torch import nn
 
 
+def _apply_softmax(attn_scores: torch.Tensor, keys: torch.Tensor) -> torch.Tensor:
+    """Apply scaled softmax to attention scores.
+
+    This private function handles the attention weight computation by:
+    1. Scaling the attention scores by 1/√d where d is the head dimension
+    2. Applying softmax to get normalized attention weights
+
+    The scaling is crucial because:
+    - Dot products in high dimensions grow with √d due to the central limit theorem
+    - Without scaling, softmax would produce very sharp distributions (some values ≈1, others ≈0)
+    - The scaling factor 1/√d counteracts this effect, keeping attention weights balanced
+
+    Args:
+        attn_scores (torch.Tensor): Raw attention scores from query-key dot products
+        keys (torch.Tensor): Key vectors used to determine the scaling factor
+
+    Returns:
+        torch.Tensor: Normalized attention weights after applying scaled softmax
+    """
+    return torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
+
+
 class SelfAttentionV1(nn.Module):
-    """Compact self-attention implementation from scratch."""
+    """Compact self-attention implementation from scratch.
+
+    This implementation uses a private _apply_softmax method to handle the attention weight computation,
+    which includes scaling by the square root of the head dimension to prevent the softmax from producing
+    very sharp distributions in high dimensions.
+    """
 
     def __init__(self, d_in: int, d_out: int) -> None:
         """Initialize the self-attention layer.
@@ -46,12 +73,16 @@ class SelfAttentionV1(nn.Module):
         values = x @ self.W_value
 
         attn_scores = queries @ keys.T  # omega
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
+        attn_weights = _apply_softmax(attn_scores, keys)
         return attn_weights @ values
 
 
 class SelfAttentionV2(nn.Module):
-    """Compact self-attention implementation from scratch."""
+    """Compact self-attention implementation from scratch.
+
+    This implementation uses nn.Linear layers instead of manual parameter initialization
+    and inherits the _apply_softmax method from SelfAttentionV1 for attention weight computation.
+    """
 
     def __init__(self, d_in: int, d_out: int, qkv_bias: bool = False) -> None:
         """Initialize the self-attention layer.
@@ -75,8 +106,6 @@ class SelfAttentionV2(nn.Module):
         advantage of using nn.Linear instead of manually implementing nn.Parameter(torch.rand(...)) is that nn.Linear
         has an optimized weight initialization scheme, contributing to more stable and effective model training.
 
-
-
         Args:
             x: Input tensor of e.g. shape [6, 3] where:
                - 6 is the number of tokens
@@ -99,19 +128,23 @@ class SelfAttentionV2(nn.Module):
         queries = self.W_query(x)
         values = self.W_value(x)
         attn_scores = queries @ keys.T
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
+        attn_weights = _apply_softmax(attn_scores, keys)
         return attn_weights @ values
 
 
 class CausalAttention(nn.Module):
-    """Causal attention implementation from scratch."""
+    """Causal attention implementation from scratch.
+
+    This implementation adds a causal mask to prevent attending to future tokens
+    and includes dropout for regularization.
+    """
 
     def __init__(
         self, d_in: int, d_out: int, context_length: int, dropout_ratio: float = 0.1, qkv_bias: bool = False
     ) -> None:
         """Initialize the causal attention layer.
 
-        We add a  mask to prevent attending to future tokens and a dropout layer to prevent overfitting.
+        We add a mask to prevent attending to future tokens and a dropout layer to prevent overfitting.
 
         Args:
             d_in (int): The size of the embeddings.
@@ -171,7 +204,7 @@ class CausalAttention(nn.Module):
         mask_slice: torch.Tensor = self.mask[:num_tokens, :num_tokens]
         # Then convert to boolean and apply the mask
         attn_scores.masked_fill_(mask_slice.bool(), -torch.inf)
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
+        attn_weights = _apply_softmax(attn_scores, keys)
         attn_weights = self.dropout(attn_weights)
 
         return attn_weights @ values
@@ -311,7 +344,7 @@ class MultiHeadAttention(nn.Module):
         attn_scores.masked_fill_(mask_bool, -torch.inf)
 
         # Apply softmax and dropout
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1] ** 0.5, dim=-1)
+        attn_weights = _apply_softmax(attn_scores, keys)
         attn_weights = self.dropout(attn_weights)
 
         # Compute weighted sum of values
