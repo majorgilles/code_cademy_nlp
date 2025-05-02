@@ -5,39 +5,34 @@ from torch import nn
 
 
 def _apply_softmax(attn_scores: torch.Tensor, keys: torch.Tensor) -> torch.Tensor:
-    """Apply scaled softmax to attention scores.
+    """Apply scaled softmax to attention scores for self-attention.
 
-    This private function handles the attention weight computation by:
-    1. Scaling the attention scores by 1/√d where d is the head dimension
-    2. Applying softmax to get normalized attention weights
+    This function computes attention weights by:
+    1. Scaling raw query-key dot products by 1/√d, where d is the dimensionality of the key vectors.
+    2. Applying softmax to convert the scores into a probability distribution.
 
-    The normalization is crucial for three main reasons:
+    Rationale:
 
-    1. Meaningful Matrix Multiplication:
-       - The final step of attention is a matrix multiplication: attention_weights @ value_vectors
-       - Without normalization, the raw dot products would not represent meaningful similarity scores
-       - The matrix multiplication would produce arbitrary, uninterpretable results
-       - Normalization ensures the weights properly scale the value vectors in a meaningful way
+    - **Scaling for numerical stability**:
+      In high-dimensional spaces, dot products can become large in magnitude, which causes
+      the softmax output to be overly sharp (i.e., nearly one-hot). Scaling by √d mitigates this effect,
+      producing more balanced and useful gradients during training.
 
-    2. Meaningful Attention Weights:
-       - Raw dot products between queries and keys can be any real number
-       - These raw scores don't have inherent meaning as weights
-       - Softmax converts these arbitrary scores into a probability distribution
-       - This ensures each token's attention weights sum to 1, making them interpretable
-       - Without normalization, we couldn't meaningfully compare attention weights
+    - **Softmax for interpretability**:
+      Raw dot products don't naturally form a probability distribution. Applying softmax
+      ensures that attention weights are non-negative and sum to 1, making them interpretable
+      as the relative importance of each token.
 
-    3. Scaling for High Dimensions:
-       - Dot products in high dimensions grow with √d due to the central limit theorem
-       - Without scaling, softmax would produce very sharp distributions (some values ≈1, others ≈0)
-       - The scaling factor 1/√d counteracts this effect, keeping attention weights balanced
-       - This prevents self-attention from becoming too focused on a single token
+    - **Effective value weighting**:
+      These normalized weights are then used to compute a weighted sum over the value vectors,
+      forming the basis of the attention output.
 
     Args:
-        attn_scores (torch.Tensor): Raw attention scores from query-key dot products
-        keys (torch.Tensor): Key vectors used to determine the scaling factor
+        attn_scores (torch.Tensor): Raw attention scores from query-key dot products.
+        keys (torch.Tensor): Key vectors used to determine the scaling factor (dimensionality).
 
     Returns:
-        torch.Tensor: Normalized attention weights after applying scaled softmax
+        torch.Tensor: Normalized attention weights.
     """
     scale = keys.shape[-1] ** 0.5
     return torch.softmax(attn_scores / scale, dim=-1)
