@@ -93,6 +93,7 @@ def merge_pair(pair_to_merge: tuple[str, str], splits: dict) -> dict:
 print("Merged splits:", merge_pair(("T", "h"), word_splits))
 print("Merged splits:", merge_pair(("i", "s"), word_splits))
 
+
 def iterate_algo(current_splits: dict, num_merges: int, vocabulary: list[str]) -> tuple[dict, dict, list[str]]:
     """Iterate the BPE algorithm."""
     merges = {}
@@ -108,7 +109,7 @@ def iterate_algo(current_splits: dict, num_merges: int, vocabulary: list[str]) -
             print("No more pairs to merge.")
             break
 
-        sorted_pairs = sorted(pair_stats.items(), key = lambda item: item[1], reverse=True)
+        sorted_pairs = sorted(pair_stats.items(), key=lambda item: item[1], reverse=True)
         print(f"Top 5 pair frequencies: {sorted_pairs[:5]}")
 
         best_pair = max(pair_stats, key=pair_stats.get)  # type: ignore
@@ -128,6 +129,7 @@ def iterate_algo(current_splits: dict, num_merges: int, vocabulary: list[str]) -
 
         print("-" * 30)
     return merges, current_splits, vocab
+
 
 num_merges = 15
 merges, current_splits, vocab = iterate_algo(word_splits, num_merges=num_merges, vocabulary=vocab)

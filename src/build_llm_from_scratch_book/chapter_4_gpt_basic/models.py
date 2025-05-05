@@ -216,3 +216,47 @@ class FeedForward(nn.Module):
             x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
         """
         return self.layers(x)
+
+
+class ExampleDeepNeuralNetwork(nn.Module):
+    """Example deep neural network that demonstrates the use of linear layers and activation functions.
+
+    This class provides a simple example of a deep neural network using PyTorch. It consists of
+    two linear layers with a GELU activation function in between. The input tensor is first projected
+    to a higher-dimensional space, then the GELU activation function introduces non-linearity,
+    and finally the output is compressed back to the original dimension.
+
+    Args:
+        input_dim (int): The dimension of the input features
+        hidden_dim (int): The dimension of the hidden features
+    """
+
+    def __init__(self, layer_sizes: list[int], use_shortcut: bool) -> None:
+        """Initialize the ExampleDeepNeuralNetwork.
+
+        Args:
+            layer_sizes (list[int]): The dimensions of the layers
+            use_shortcut (bool): Whether to use a shortcut connection
+        """
+        super().__init__()
+        self.use_shortcut = use_shortcut
+        self.layers = nn.ModuleList(
+            [
+                nn.Sequential(nn.Linear(layer_sizes[0], layer_sizes[1]), GELU()),
+                nn.Sequential(nn.Linear(layer_sizes[1], layer_sizes[2]), GELU()),
+                nn.Sequential(nn.Linear(layer_sizes[2], layer_sizes[3]), GELU()),
+                nn.Sequential(nn.Linear(layer_sizes[3], layer_sizes[4]), GELU()),
+                nn.Sequential(nn.Linear(layer_sizes[4], layer_sizes[5]), GELU()),
+            ]
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass of the ExampleDeepNeuralNetwork.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
+        """
+        for layer in self.layers:
+            layer_output = layer(x)
+            x = x + layer_output if self.use_shortcut and x.shape == layer_output.shape else layer_output
+        return x
