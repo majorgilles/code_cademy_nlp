@@ -644,23 +644,51 @@ class ExampleDeepNeuralNetwork(nn.Module):
 
 
 class TransformerBlock(nn.Module):
-    """Transformer block that consists of a self-attention mechanism and a feed-forward network.
+    """Transformer block that implements a single layer of the transformer architecture.
 
-    This class implements a single transformer block, which is a fundamental building block of
-    transformer models. It includes a self-attention mechanism and a feed-forward network.
+    The transformer block consists of two main components:
+    1. Multi-head self-attention mechanism
+    2. Feed-forward neural network
+
+    Each component is wrapped in a residual connection (skip connection) and layer normalization,
+    following the "Pre-LN" (Pre-Layer Normalization) architecture. This architecture has been shown
+    to provide more stable training compared to the original "Post-LN" architecture.
+
+    The block processes input through the following steps:
+    1. Layer normalization followed by multi-head attention
+    2. Residual connection with dropout on the attention output
+    3. Layer normalization followed by feed-forward network
+    4. Residual connection with dropout on the feed-forward output
+
+    The drop_shortcut layer is crucial for regularization:
+    - It applies dropout to the output of each sub-block (attention and feed-forward)
+    - This helps prevent overfitting by randomly "dropping" some of the learned features
+    - The dropout is applied before the residual connection, which means it affects the
+      transformed features but not the original input
+    - This is different from applying dropout to the entire block's output, as it allows
+      the model to learn more robust features while maintaining the benefits of residual connections
+
+    Args:
+        cfg (GPTConfig): Configuration object containing model hyperparameters
     """
 
     def __init__(self, cfg: GPTConfig) -> None:
         """Initialize the TransformerBlock.
 
         Args:
-            cfg (GPTConfig): The configuration for the TransformerBlock
+            cfg (GPTConfig): The configuration for the TransformerBlock containing:
+                - embed_dim: Dimension of the input embeddings
+                - context_length: Maximum sequence length
+                - n_heads: Number of attention heads
+                - qkv_bias: Whether to use bias in QKV projections
+                - drop_rate: Dropout probability for regularization
         """
         super().__init__()
         self.att = MultiHeadAttention(
             d_in=cfg.embed_dim,
             d_out=cfg.embed_dim,
             context_length=cfg.context_length,
+            dropout_ratio=cfg.drop_rate,  # Add missing dropout_ratio parameter
             num_heads=cfg.n_heads,
             qkv_bias=cfg.qkv_bias,
         )
@@ -672,15 +700,28 @@ class TransformerBlock(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass of the TransformerBlock.
 
+        The forward pass implements the following computation:
+        1. x_norm = LayerNorm(x)
+        2. att_out = MultiHeadAttention(x_norm)
+        3. x = x + Dropout(att_out)  # First residual connection
+        4. x_norm = LayerNorm(x)
+        5. ff_out = FeedForward(x_norm)
+        6. x = x + Dropout(ff_out)   # Second residual connection
+
         Args:
             x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
+
+        Returns:
+            torch.Tensor: Output tensor of the same shape as input
         """
+        # First sub-block: Multi-head attention with residual connection
         shortcut = x
         x = self.norm1(x)
         x = self.att(x)
         x = self.drop_shortcut(x)
         x = x + shortcut
 
+        # Second sub-block: Feed-forward network with residual connection
         shortcut = x
         x = self.norm2(x)
         x = self.ff(x)
