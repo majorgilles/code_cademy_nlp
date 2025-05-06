@@ -659,7 +659,7 @@ class TransformerBlock(nn.Module):
       one layer to another by adding the input to the output of a transformation
     - In this implementation, we have two skip connections:
       1. First skip: x = x + Dropout(Attention(LayerNorm(x)))
-         - The original input (stored in 'skip_connection') is added to the transformed output
+         - The original input (stored in 'shortcut') is added to the transformed output
          - This helps with gradient flow during training
       2. Second skip: x = x + Dropout(FeedForward(LayerNorm(x)))
          - Similar to the first skip, but after the feed-forward network
@@ -725,8 +725,8 @@ class TransformerBlock(nn.Module):
         6. x = x + Dropout(ff_out)   # Second skip connection
 
         Skip connections are implemented by:
-        - Storing the input in 'skip_connection' before transformation
-        - Adding it back after the transformation: x = x + skip_connection
+        - Storing the input in 'shortcut' before transformation
+        - Adding it back after the transformation: x = x + shortcut
         - This allows the gradient to flow directly through the network
 
         Args:
@@ -736,18 +736,18 @@ class TransformerBlock(nn.Module):
             torch.Tensor: Output tensor of the same shape as input
         """
         # First sub-block: Multi-head attention with skip connection
-        skip_connection = x  # Store input for skip connection
+        shortcut = x  # Store input for skip connection
         x = self.norm1(x)
         x = self.att(x)
         x = self.drop_shortcut(x)
-        x = x + skip_connection  # Skip connection: add original input to transformed output
+        x = x + shortcut  # Skip connection: add original input to transformed output
 
         # Second sub-block: Feed-forward network with skip connection
-        skip_connection = x  # Store input for skip connection
+        shortcut = x  # Store input for skip connection
         x = self.norm2(x)
         x = self.ff(x)
         x = self.drop_shortcut(x)
-        return x + skip_connection  # Skip connection: add original input to transformed output
+        return x + shortcut  # Skip connection: add original input to transformed output
 
 
 if __name__ == "__main__":
