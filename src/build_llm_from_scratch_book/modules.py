@@ -650,35 +650,35 @@ class TransformerBlock(nn.Module):
     1. Multi-head self-attention mechanism (self.att)
     2. Feed-forward neural network (self.ff)
 
-    Each component is wrapped in a residual connection (skip connection) and layer normalization,
-    following the "Pre-LN" (Pre-Layer Normalization) architecture. This architecture has been shown
-    to provide more stable training compared to the original "Post-LN" architecture.
+    Each component is wrapped in a shortcut connection (also called skip connection or residual connection)
+    and layer normalization, following the "Pre-LN" (Pre-Layer Normalization) architecture. This architecture
+    has been shown to provide more stable training compared to the original "Post-LN" architecture.
 
-    Skip Connections Explained:
-    - A skip connection (also called residual connection) allows information to flow directly from
-      one layer to another by adding the input to the output of a transformation
-    - In this implementation, we have two skip connections:
-      1. First skip: x = x + Dropout(Attention(LayerNorm(x)))
+    Shortcut Connections Explained:
+    - A shortcut connection allows information to flow directly from one layer to another by
+      adding the input to the output of a transformation
+    - In this implementation, we have two shortcut connections:
+      1. First shortcut: x = x + Dropout(Attention(LayerNorm(x)))
          - The original input (stored in 'shortcut') is added to the transformed output
          - This helps with gradient flow during training
-      2. Second skip: x = x + Dropout(FeedForward(LayerNorm(x)))
-         - Similar to the first skip, but after the feed-forward network
-    - The skip connections are implemented using the '+' operator in the forward pass
+      2. Second shortcut: x = x + Dropout(FeedForward(LayerNorm(x)))
+         - Similar to the first shortcut, but after the feed-forward network
+    - The shortcut connections are implemented using the '+' operator in the forward pass
     - They help prevent the vanishing gradient problem and make it easier to train deep networks
 
     The block processes input through the following steps:
     1. Layer normalization (self.norm1) followed by multi-head attention (self.att)
-    2. Residual connection with dropout (self.drop_shortcut) on the attention output
+    2. Shortcut connection with dropout (self.drop_shortcut) on the attention output
     3. Layer normalization (self.norm2) followed by feed-forward network (self.ff)
-    4. Residual connection with dropout (self.drop_shortcut) on the feed-forward output
+    4. Shortcut connection with dropout (self.drop_shortcut) on the feed-forward output
 
     The drop_shortcut layer (self.drop_shortcut) is crucial for regularization:
     - It applies dropout to the output of each sub-block (attention and feed-forward)
     - This helps prevent overfitting by randomly "dropping" some of the learned features
-    - The dropout is applied before the residual connection, which means it affects the
+    - The dropout is applied before the shortcut connection, which means it affects the
       transformed features but not the original input
     - This is different from applying dropout to the entire block's output, as it allows
-      the model to learn more robust features while maintaining the benefits of residual connections
+      the model to learn more robust features while maintaining the benefits of shortcut connections
 
     Args:
         cfg (GPTConfig): Configuration object containing model hyperparameters
@@ -719,12 +719,12 @@ class TransformerBlock(nn.Module):
         The forward pass implements the following computation:
         1. x_norm = LayerNorm(x)
         2. att_out = MultiHeadAttention(x_norm)
-        3. x = x + Dropout(att_out)  # First skip connection
+        3. x = x + Dropout(att_out)  # First shortcut connection
         4. x_norm = LayerNorm(x)
         5. ff_out = FeedForward(x_norm)
-        6. x = x + Dropout(ff_out)   # Second skip connection
+        6. x = x + Dropout(ff_out)   # Second shortcut connection
 
-        Skip connections are implemented by:
+        Shortcut connections are implemented by:
         - Storing the input in 'shortcut' before transformation
         - Adding it back after the transformation: x = x + shortcut
         - This allows the gradient to flow directly through the network
@@ -735,19 +735,19 @@ class TransformerBlock(nn.Module):
         Returns:
             torch.Tensor: Output tensor of the same shape as input
         """
-        # First sub-block: Multi-head attention with skip connection
-        shortcut = x  # Store input for skip connection
+        # First sub-block: Multi-head attention with shortcut connection
+        shortcut = x  # Store input for shortcut connection
         x = self.norm1(x)
         x = self.att(x)
         x = self.drop_shortcut(x)
-        x = x + shortcut  # Skip connection: add original input to transformed output
+        x = x + shortcut  # Shortcut connection: add original input to transformed output
 
-        # Second sub-block: Feed-forward network with skip connection
-        shortcut = x  # Store input for skip connection
+        # Second sub-block: Feed-forward network with shortcut connection
+        shortcut = x  # Store input for shortcut connection
         x = self.norm2(x)
         x = self.ff(x)
         x = self.drop_shortcut(x)
-        return x + shortcut  # Skip connection: add original input to transformed output
+        return x + shortcut  # Shortcut connection: add original input to transformed output
 
 
 if __name__ == "__main__":
