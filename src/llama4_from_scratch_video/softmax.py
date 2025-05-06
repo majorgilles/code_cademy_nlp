@@ -1,6 +1,5 @@
 """A simple softmax implementation."""
 
-
 import torch
 
 # config
