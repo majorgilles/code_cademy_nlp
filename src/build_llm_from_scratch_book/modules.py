@@ -794,5 +794,4 @@ class GPTModel(nn.Module):
         x = self.drop_emb(x)
         x = self.trf_blocks(x)
         x = self.final_norm(x)
-        logits = self.out_head(x)
-        return logits
+        return self.out_head(x)
