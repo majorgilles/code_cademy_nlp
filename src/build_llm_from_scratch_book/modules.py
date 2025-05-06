@@ -666,29 +666,6 @@ class TransformerBlock(nn.Module):
     - The shortcut connections are implemented using the '+' operator in the forward pass
     - They help prevent the vanishing gradient problem and make it easier to train deep networks
 
-    The block processes input through the following steps:
-    1. Layer normalization (self.norm1) followed by multi-head attention (self.att)
-    2. Shortcut connection with dropout (self.drop_shortcut) on the attention output
-    3. Layer normalization (self.norm2) followed by feed-forward network (self.ff)
-    4. Shortcut connection with dropout (self.drop_shortcut) on the feed-forward output
-
-    The drop_shortcut layer (self.drop_shortcut) Explained:
-    - This is a dropout layer that is applied to the output of each sub-block (attention and feed-forward)
-      BEFORE it is added to the shortcut connection
-    - The name 'drop_shortcut' comes from its position in the architecture: it drops (randomly zeros)
-      some elements of the transformed output before it takes the "shortcut" path to be added
-      to the original input
-    - For example, in the attention block:
-      1. x is transformed by attention: att_out = Attention(LayerNorm(x))
-      2. drop_shortcut randomly zeros some elements: dropped = Dropout(att_out)
-      3. The dropped output is added to the original input: x = x + dropped
-    - This specific placement of dropout (before the shortcut addition) is crucial because:
-      - It only affects the transformed features, not the original input
-      - The original input remains intact through the shortcut path
-      - This creates a form of regularization that forces the network to learn robust features
-        while maintaining the benefits of the shortcut connection
-    - The dropout probability is controlled by cfg.drop_rate
-
     Args:
         cfg (GPTConfig): Configuration object containing model hyperparameters
     """
@@ -720,8 +697,6 @@ class TransformerBlock(nn.Module):
         self.norm1 = LayerNorm(cfg.embed_dim)
         self.norm2 = LayerNorm(cfg.embed_dim)
         # Dropout layer that is applied before the shortcut connection
-        # It drops (randomly zeros) some elements of the transformed output
-        # before it is added to the original input through the shortcut
         self.drop_shortcut = nn.Dropout(cfg.drop_rate)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -735,10 +710,22 @@ class TransformerBlock(nn.Module):
         5. ff_out = FeedForward(x_norm)
         6. x = x + Dropout(ff_out)   # Second shortcut connection
 
-        Shortcut connections are implemented by:
-        - Storing the input in 'shortcut' before transformation
-        - Adding it back after the transformation: x = x + shortcut
-        - This allows the gradient to flow directly through the network
+        The drop_shortcut layer (self.drop_shortcut) Explained:
+        - This is a dropout layer that is applied to the output of each sub-block (attention and feed-forward)
+          BEFORE it is added to the shortcut connection
+        - The name 'drop_shortcut' comes from its position in the architecture: it drops (randomly zeros)
+          some elements of the transformed output before it takes the "shortcut" path to be added
+          to the original input
+        - For example, in the attention block:
+          1. x is transformed by attention: att_out = Attention(LayerNorm(x))
+          2. drop_shortcut randomly zeros some elements: dropped = Dropout(att_out)
+          3. The dropped output is added to the original input: x = x + dropped
+        - This specific placement of dropout (before the shortcut addition) is crucial because:
+          - It only affects the transformed features, not the original input
+          - The original input remains intact through the shortcut path
+          - This creates a form of regularization that forces the network to learn robust features
+            while maintaining the benefits of the shortcut connection
+        - The dropout probability is controlled by cfg.drop_rate
 
         Args:
             x (torch.Tensor): Input tensor of shape (batch_size, seq_len, embed_dim)
