@@ -63,6 +63,15 @@ h1 {
   padding: 20px;
   margin: 10px 0;
 }
+
+.story {
+  font-style: italic;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 </style>
 
 # Gilles' favourite Lizy values
@@ -109,20 +118,17 @@ h1 {
 
 # Drive: The Pursuit of Excellence
 
-<div class="journey-item">
-  <p>Making it work is just the beginning</p>
-  <p>Striving for excellence in every iteration</p>
-  <p>From "good enough" to "exceptional"</p>
+<div class="story">
+  <p>"It was 3 AM when I finally got the system working. The team was facing a critical deadline, and the integration wasn't cooperating. Instead of calling it a night, I stayed, debugged, and iterated until everything was perfect. That's what drive means to me - not stopping until it's right."</p>
 </div>
 
 <div class="phase">
-  <h3>Our Approach</h3>
+  <h3>What Drive Means</h3>
   <div class="journey-item">
-    <p>Start with a working solution</p>
-    <p>Add robust error handling and logging</p>
-    <p>Implement input validation and monitoring</p>
-    <p>Optimize performance and maintainability</p>
-    <p>Continuously refactor and improve</p>
+    <p>Working until the early hours to get things right</p>
+    <p>Not settling for "good enough"</p>
+    <p>Pushing through challenges when others might stop</p>
+    <p>Taking ownership of problems until they're solved</p>
   </div>
 </div>
 
