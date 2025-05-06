@@ -746,3 +746,54 @@ class TransformerBlock(nn.Module):
         x = self.ff(x)
         x = self.drop_shortcut(x)  # Apply dropout to transformed output before shortcut
         return x + shortcut  # Shortcut connection: add original input to transformed output
+
+
+class GPTModel(nn.Module):
+    """GPT model that implements the transformer architecture.
+
+    The GPT model consists of a stack of transformer blocks, each containing:
+    - Multi-head self-attention mechanism
+
+
+    Args:
+        cfg (GPTConfig): Configuration object containing model hyperparameters
+    """
+
+    def __init__(self, cfg: GPTConfig) -> None:
+        """Initialize the GPTModel.
+
+        Args:
+            cfg (GPTConfig): The configuration for the GPTModel containing:
+                - embed_dim: Dimension of the input embeddings
+                - context_length: Maximum sequence length
+                - n_heads: Number of attention heads
+                - qkv_bias: Whether to use bias in QKV projections
+                - drop_rate: Dropout probability for regularization
+        """
+        super().__init__()
+        self.tok_emb = nn.Embedding(cfg.vocab_size, cfg.embed_dim)
+        self.pos_emb = nn.Embedding(cfg.context_length, cfg.embed_dim)
+        self.drop_emb = nn.Dropout(cfg.drop_rate)
+        self.trf_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg.n_layers)])
+        self.final_norm = LayerNorm(cfg.embed_dim)
+        self.out_head = nn.Linear(cfg.embed_dim, cfg.vocab_size)
+
+    def forward(self, in_idx: torch.Tensor) -> torch.Tensor:
+        """Forward pass of the GPTModel.
+
+        Args:
+            in_idx (torch.Tensor): Input tensor of shape (batch_size, seq_len)
+
+        Returns:
+            torch.Tensor: Output tensor of shape (batch_size, seq_len, vocab_size)
+        """
+        _, seq_len = in_idx.shape
+        tok_embs = self.tok_emb(in_idx)
+        pos_embs = self.pos_emb(torch.arange(seq_len), devince=in_idx.device)
+        x = tok_embs + pos_embs
+        x = self.drop_emb(x)
+        x = self.trf_blocks(x)
+        x = self.final_norm(x)
+        logits = self.out_head(x)
+        print(f"logits.shape: {logits.shape}")
+        return logits
