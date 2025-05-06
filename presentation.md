@@ -33,21 +33,80 @@ h1 {
   background-clip: text;
   font-weight: bold;
 }
+
+.value-card {
+  text-align: center;
+  width: 45%;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  border-top: 5px solid;
+}
+
+.value-card:nth-child(1) {
+  border-top-color: #FF5757;
+}
+
+.value-card:nth-child(2) {
+  border-top-color: #FF4E97;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.phase {
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 10px 0;
+}
 </style>
 
-# Personal Growth: The Technical Evolution
+# Our Core Values
 
-<div class="journey-item">
-  <p>Python → AWS Lambda → CloudFormation → DDD/Hexagonal → LLMs</p>
-  <p>Each step represents a <span class="highlight">reinvention</span> of technical knowledge</p>
-  <p>From basic scripting to complex distributed systems</p>
+<div class="flex-container">
+  <div class="value-card">
+    <h2>Personal Growth</h2>
+    <p>Constantly reinventing technical knowledge</p>
+  </div>
+  <div class="value-card">
+    <h2>Drive</h2>
+    <p>Striving for excellence in everything we do</p>
+  </div>
 </div>
 
 ![bg right:35% 70%](https://via.placeholder.com/500x300/FF5757/ffffff?text=)
 
 ---
 
-# The Drive to Improve
+# Personal Growth: The Technical Evolution
+
+<div class="phase">
+  <h3>Phase 1: Building Foundations</h3>
+  <div class="journey-item">
+    <p>Starting with basic programming</p>
+    <p>Learning cloud technologies</p>
+    <p>Building scalable applications</p>
+  </div>
+</div>
+
+<div class="phase">
+  <h3>Phase 2: Advanced Skills</h3>
+  <div class="journey-item">
+    <p>Mastering complex system design</p>
+    <p>Creating intelligent applications</p>
+    <p>Building future-proof solutions</p>
+  </div>
+</div>
+
+![bg right:35% 70%](https://via.placeholder.com/500x300/FF5757/ffffff?text=)
+
+---
+
+# Drive: The Pursuit of Excellence
 
 <div class="journey-item">
   <p>Making it work is just the beginning</p>
@@ -55,48 +114,14 @@ h1 {
   <p>From "good enough" to "exceptional"</p>
 </div>
 
-```python
-# Example: Evolving from simple to robust
-def process_data(data):
-    # Version 1: Basic implementation
-    return data.process()
-    
-    # Version 2: With error handling
-    try:
-        return data.process()
-    except Exception as e:
-        logger.error(f"Processing failed: {e}")
-        raise
-        
-    # Version 3: With validation and monitoring
-    @validate_input
-    @monitor_performance
-    def process_data(data):
-        return data.process()
-```
-
----
-
-# Growth Through Challenge
-
-<div class="journey-item">
-  <p>Learning LLMs and agentic applications</p>
-  <p>Applying DDD principles to complex domains</p>
-  <p>Building scalable, maintainable architectures</p>
+<div class="phase">
+  <h3>Our Approach</h3>
+  <div class="journey-item">
+    <p>Start with a working solution</p>
+    <p>Add reliability and error handling</p>
+    <p>Enhance with monitoring and validation</p>
+    <p>Continuously improve and optimize</p>
+  </div>
 </div>
-
-```python
-# Example: Modern architecture with DDD
-class DomainService:
-    def __init__(self, repository: Repository, event_bus: EventBus):
-        self.repository = repository
-        self.event_bus = event_bus
-    
-    async def handle_command(self, command: Command):
-        aggregate = await self.repository.get(command.id)
-        aggregate.execute(command)
-        await self.repository.save(aggregate)
-        await self.event_bus.publish(aggregate.events)
-```
 
 ![bg right:35% 70%](https://via.placeholder.com/500x300/FF4E97/ffffff?text=) 
