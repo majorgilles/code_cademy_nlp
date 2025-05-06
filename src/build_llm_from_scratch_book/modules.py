@@ -759,13 +759,3 @@ class TransformerBlock(nn.Module):
         x = self.ff(x)
         x = self.drop_shortcut(x)  # Apply dropout to transformed output before shortcut
         return x + shortcut  # Shortcut connection: add original input to transformed output
-
-
-if __name__ == "__main__":
-    torch.manual_seed(123)
-    batch_size, context_length, d_in, d_out, num_heads = 2, 6, 3, 2, 2
-    mha = MultiHeadAttention(d_in, d_out, context_length, 0.0, num_heads=2)
-    batch = torch.randn(batch_size, context_length, d_in)
-    context_vecs = mha(batch)
-    print(context_vecs)
-    print("context_vecs.shape:", context_vecs.shape)
