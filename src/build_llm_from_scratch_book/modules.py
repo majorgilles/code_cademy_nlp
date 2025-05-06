@@ -672,13 +672,22 @@ class TransformerBlock(nn.Module):
     3. Layer normalization (self.norm2) followed by feed-forward network (self.ff)
     4. Shortcut connection with dropout (self.drop_shortcut) on the feed-forward output
 
-    The drop_shortcut layer (self.drop_shortcut) is crucial for regularization:
-    - It applies dropout to the output of each sub-block (attention and feed-forward)
-    - This helps prevent overfitting by randomly "dropping" some of the learned features
-    - The dropout is applied before the shortcut connection, which means it affects the
-      transformed features but not the original input
-    - This is different from applying dropout to the entire block's output, as it allows
-      the model to learn more robust features while maintaining the benefits of shortcut connections
+    The drop_shortcut layer (self.drop_shortcut) Explained:
+    - This is a dropout layer that is applied to the output of each sub-block (attention and feed-forward)
+      BEFORE it is added to the shortcut connection
+    - The name 'drop_shortcut' comes from its position in the architecture: it drops (randomly zeros)
+      some elements of the transformed output before it takes the "shortcut" path to be added
+      to the original input
+    - For example, in the attention block:
+      1. x is transformed by attention: att_out = Attention(LayerNorm(x))
+      2. drop_shortcut randomly zeros some elements: dropped = Dropout(att_out)
+      3. The dropped output is added to the original input: x = x + dropped
+    - This specific placement of dropout (before the shortcut addition) is crucial because:
+      - It only affects the transformed features, not the original input
+      - The original input remains intact through the shortcut path
+      - This creates a form of regularization that forces the network to learn robust features
+        while maintaining the benefits of the shortcut connection
+    - The dropout probability is controlled by cfg.drop_rate
 
     Args:
         cfg (GPTConfig): Configuration object containing model hyperparameters
@@ -710,7 +719,9 @@ class TransformerBlock(nn.Module):
         # Layer normalization layers
         self.norm1 = LayerNorm(cfg.embed_dim)
         self.norm2 = LayerNorm(cfg.embed_dim)
-        # Dropout layer for regularization
+        # Dropout layer that is applied before the shortcut connection
+        # It drops (randomly zeros) some elements of the transformed output
+        # before it is added to the original input through the shortcut
         self.drop_shortcut = nn.Dropout(cfg.drop_rate)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -739,14 +750,14 @@ class TransformerBlock(nn.Module):
         shortcut = x  # Store input for shortcut connection
         x = self.norm1(x)
         x = self.att(x)
-        x = self.drop_shortcut(x)
+        x = self.drop_shortcut(x)  # Apply dropout to transformed output before shortcut
         x = x + shortcut  # Shortcut connection: add original input to transformed output
 
         # Second sub-block: Feed-forward network with shortcut connection
         shortcut = x  # Store input for shortcut connection
         x = self.norm2(x)
         x = self.ff(x)
-        x = self.drop_shortcut(x)
+        x = self.drop_shortcut(x)  # Apply dropout to transformed output before shortcut
         return x + shortcut  # Shortcut connection: add original input to transformed output
 
 
