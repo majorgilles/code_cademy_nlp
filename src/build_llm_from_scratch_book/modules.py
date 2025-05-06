@@ -789,7 +789,7 @@ class GPTModel(nn.Module):
         """
         _, seq_len = in_idx.shape
         tok_embs = self.tok_emb(in_idx)
-        pos_embs = self.pos_emb(torch.arange(seq_len), devince=in_idx.device)
+        pos_embs = self.pos_emb(torch.arange(seq_len, device=in_idx.device))
         x = tok_embs + pos_embs
         x = self.drop_emb(x)
         x = self.trf_blocks(x)
