@@ -85,20 +85,21 @@ h1 {
 # Personal Growth: The Technical Evolution
 
 <div class="phase">
-  <h3>Phase 1: Building Foundations</h3>
+  <h3>Phase 1: Cloud Foundations</h3>
   <div class="journey-item">
-    <p>Starting with basic programming</p>
-    <p>Learning cloud technologies</p>
-    <p>Building scalable applications</p>
+    <p>Python → AWS Lambda → CloudFormation</p>
+    <p>Building scalable serverless applications</p>
+    <p>Learning to deploy and manage cloud infrastructure</p>
   </div>
 </div>
 
 <div class="phase">
-  <h3>Phase 2: Advanced Skills</h3>
+  <h3>Phase 2: Advanced Architecture & AI</h3>
   <div class="journey-item">
-    <p>Mastering complex system design</p>
-    <p>Creating intelligent applications</p>
-    <p>Building future-proof solutions</p>
+    <p>DDD/Hexagonal Architecture + LLMs</p>
+    <p>Building complex systems with clean architecture</p>
+    <p>Creating intelligent, agentic applications</p>
+    <p>Mastering both system design and AI integration</p>
   </div>
 </div>
 
@@ -118,9 +119,10 @@ h1 {
   <h3>Our Approach</h3>
   <div class="journey-item">
     <p>Start with a working solution</p>
-    <p>Add reliability and error handling</p>
-    <p>Enhance with monitoring and validation</p>
-    <p>Continuously improve and optimize</p>
+    <p>Add robust error handling and logging</p>
+    <p>Implement input validation and monitoring</p>
+    <p>Optimize performance and maintainability</p>
+    <p>Continuously refactor and improve</p>
   </div>
 </div>
 
