@@ -65,7 +65,7 @@ h1 {
 }
 </style>
 
-# Our Core Values
+# Gilles' favourite Lizy values
 
 <div class="flex-container">
   <div class="value-card">
