@@ -771,10 +771,10 @@ class GPTModel(nn.Module):
                 - drop_rate: Dropout probability for regularization
         """
         super().__init__()
-        self.tok_emb = nn.Embedding(cfg.vocab_size, cfg.embed_dim)
-        self.pos_emb = nn.Embedding(cfg.context_length, cfg.embed_dim)
-        self.drop_emb = nn.Dropout(cfg.drop_rate)
-        self.trf_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg.n_layers)])
+        self.token_embeddings = nn.Embedding(cfg.vocab_size, cfg.embed_dim)
+        self.positional_embeddings = nn.Embedding(cfg.context_length, cfg.embed_dim)
+        self.dropout = nn.Dropout(cfg.drop_rate)
+        self.transformer_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg.n_layers)])
         self.final_norm = LayerNorm(cfg.embed_dim)
         self.out_head = nn.Linear(cfg.embed_dim, cfg.vocab_size)
 
@@ -787,11 +787,11 @@ class GPTModel(nn.Module):
         Returns:
             torch.Tensor: Output tensor of shape (batch_size, seq_len, vocab_size)
         """
-        _, seq_len = in_idx.shape
-        tok_embs = self.tok_emb(in_idx)
-        pos_embs = self.pos_emb(torch.arange(seq_len, device=in_idx.device))
-        x = tok_embs + pos_embs
-        x = self.drop_emb(x)
-        x = self.trf_blocks(x)
+        _, sequence_length = in_idx.shape
+        token_embeddings = self.token_embeddings(in_idx)
+        positional_embeddings = self.positional_embeddings(torch.arange(sequence_length, device=in_idx.device))
+        x = token_embeddings + positional_embeddings
+        x = self.dropout(x)
+        x = self.transformer_blocks(x)
         x = self.final_norm(x)
         return self.out_head(x)
