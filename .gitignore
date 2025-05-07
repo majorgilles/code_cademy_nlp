@@ -2,3 +2,4 @@
 .vscode/
 rmm_log.txt
 *.pyc
+.DS_Store

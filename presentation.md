@@ -74,16 +74,16 @@ h1 {
 }
 </style>
 
-# Gilles' favourite Lizy values
+# My favourite Lizy core values
 
 <div class="flex-container">
   <div class="value-card">
     <h2>Personal Growth</h2>
-    <p>Constantly reinventing technical knowledge</p>
+    <p>The need to reinvent oneself</p>
   </div>
   <div class="value-card">
     <h2>Drive</h2>
-    <p>Striving for excellence in everything we do</p>
+    <p>Drive: The need to commit to a goal.</p>
   </div>
 </div>
 
@@ -96,7 +96,8 @@ h1 {
 <div class="phase">
   <h3>Phase 1: Cloud Foundations</h3>
   <div class="journey-item">
-    <p>Python → AWS Lambda → CloudFormation</p>
+    <p>Python | AWS Lambda | CloudFormation</p>
+    <p>Learning a new language and ecosystem</p>
     <p>Building scalable serverless applications</p>
     <p>Learning to deploy and manage cloud infrastructure</p>
   </div>
@@ -106,9 +107,8 @@ h1 {
   <h3>Phase 2: Advanced Architecture & AI</h3>
   <div class="journey-item">
     <p>DDD/Hexagonal Architecture + LLMs</p>
-    <p>Building complex systems with clean architecture</p>
-    <p>Creating intelligent, agentic applications</p>
-    <p>Mastering both system design and AI integration</p>
+    <p>Building complex systems with clean architecture to keep deliverying value.</p>
+    <p>Creating intelligent, agentic applications (in-progress)</p>
   </div>
 </div>
 
@@ -116,20 +116,21 @@ h1 {
 
 ---
 
-# Drive: The Pursuit of Excellence
+# Drive: The need to commit to a goal.
 
 <div class="story">
-  <p>"It was 3 AM when I finally got the system working. The team was facing a critical deadline, and the integration wasn't cooperating. Instead of calling it a night, I stayed, debugged, and iterated until everything was perfect. That's what drive means to me - not stopping until it's right."</p>
+  <p>"Fines were not working because of a recent switch to a new infrastructure for our AI applications. Needed to push into the wee hours
+  so the business is not impacted."</p>
 </div>
 
 <div class="phase">
   <h3>What Drive Means</h3>
   <div class="journey-item">
-    <p>Working until the early hours to get things right</p>
-    <p>Not settling for "good enough"</p>
-    <p>Pushing through challenges when others might stop</p>
     <p>Taking ownership of problems until they're solved</p>
+    <p>Doing what's necessary, even if sometimes dicfficult.</p>
+    <p>Not settling for the lower common denominator.</p>
+    <p>But perfection should stay a moving target! There's no absolutes.</p>
   </div>
 </div>
 
-![bg right:35% 70%](https://via.placeholder.com/500x300/FF4E97/ffffff?text=) 
+![bg right:35% 70%](https://via.placeholder.com/500x300/FF4E97/ffffff?text=)
