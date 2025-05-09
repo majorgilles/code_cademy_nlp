@@ -790,8 +790,6 @@ class GPTModel(nn.Module):
         _, sequence_length = in_idx.shape
         token_embeddings = self.token_embeddings(in_idx)
         positional_embeddings = self.positional_embeddings(torch.arange(sequence_length, device=in_idx.device))
-        print(f"token_embeddings.shape: {token_embeddings.shape}")
-        print(f"positional_embeddings.shape: {positional_embeddings.shape}")
         x = token_embeddings + positional_embeddings
         x = self.dropout(x)
         x = self.transformer_blocks(x)
