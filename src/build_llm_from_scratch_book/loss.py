@@ -5,6 +5,13 @@ The main loss function used is cross-entropy loss, which measures how well the m
 predictions match the target values. The loss is calculated by:
 1. Flattening the input tensors to match the expected dimensions for cross-entropy
 2. Computing the cross-entropy loss between the model's predictions and targets
+
+Note on devices:
+A device in PyTorch refers to where the computation is performed - either CPU or GPU.
+- CPU (Central Processing Unit): The default device, good for small models and data
+- GPU (Graphics Processing Unit): Specialized hardware for parallel processing, much faster for deep learning
+- Device is specified as torch.device('cpu') or torch.device('cuda') for GPU
+- Moving tensors to the right device is crucial for performance
 """
 
 import torch
@@ -16,7 +23,7 @@ def calculate_loss_batch(
     """Calculate the loss for a batch of input and target tensors.
 
     The function:
-    1. Moves input and target tensors to the specified device
+    1. Moves input and target tensors to the specified device (CPU or GPU)
     2. Gets model predictions (logits) for the input batch
     3. Flattens the tensors to match cross-entropy requirements:
        - logits: [batch_size, seq_len, vocab_size] -> [batch_size*seq_len, vocab_size]
@@ -27,7 +34,8 @@ def calculate_loss_batch(
         input_batch: Input tensor of shape [batch_size, seq_len]
         target_batch: Target tensor of shape [batch_size, seq_len]
         model: The model to generate predictions
-        device: Device to move tensors to (e.g., 'cuda' or 'cpu')
+        device: Device to move tensors to (e.g., 'cuda' for GPU or 'cpu' for CPU)
+               This determines where the computation will be performed
 
     Returns:
         torch.Tensor: The computed cross-entropy loss
