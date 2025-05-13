@@ -44,3 +44,30 @@ def calculate_loss_batch(
     target_batch = target_batch.to(device)
     logits = model(input_batch)
     return torch.nn.functional.cross_entropy(logits.flatten(0, 1), target_batch.flatten())
+
+
+def calculate_loss_loader(
+    dataloader: torch.utils.data.DataLoader,
+    model: torch.nn.Module,
+    device: torch.device,
+    num_batches: int | None = None,
+) -> float:
+    """Calculate the loss for a dataloader.
+
+    The function:
+    1. Iterates over the dataloader
+    2. Calculates the loss for each batch
+    3. Returns the average loss
+    """
+    total_loss = 0.0
+    if len(dataloader) == 0:
+        return float("nan")
+    num_batches = len(dataloader) if num_batches is None else min(num_batches, len(dataloader))
+
+    for i, (input_batch, target_batch) in enumerate(dataloader):
+        if i < num_batches:
+            loss = calculate_loss_batch(input_batch, target_batch, model, device)
+            total_loss += loss.item()
+        else:
+            break
+    return total_loss / num_batches
