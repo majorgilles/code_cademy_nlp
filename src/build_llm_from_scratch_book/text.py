@@ -44,7 +44,7 @@ def generate(  # noqa: PLR0913
 ) -> torch.Tensor:
     """Generate text with a GPT model.
 
-    A modified text generation function with more diversity
+    A modified text generation function with more diversity.
     """
     for _ in range(max_new_tokens):
         idx_cond = idx[:, -context_size:]
